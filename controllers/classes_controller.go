@@ -17,8 +17,8 @@ func NewClassesController() *ClassesController {
 	}
 }
 
-func (ctrl *ClassesController) SetupRoutes(router *gin.Engine) {
-	router.GET("/api/classes", ctrl.getClassesSchedules)
+func (ctrl *ClassesController) SetupRoutes(router *gin.RouterGroup) {
+	router.GET("/classes", ctrl.getClassesSchedules)
 	//router.POST("/classes", ctrl.service.GetItems)
 	//router.PUT("/classes", ctrl.service.GetItems)
 }

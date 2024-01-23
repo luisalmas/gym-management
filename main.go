@@ -21,8 +21,9 @@ import (
 // @BasePath  /api
 func main() {
     router := gin.Default()
-
-	controllers.NewClassesController().SetupRoutes(router)
+	prefix := router.Group("/api")
+	
+	controllers.NewClassesController().SetupRoutes(prefix)
 
 	//============= Swagger ==============================
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
