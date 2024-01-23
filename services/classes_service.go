@@ -1,6 +1,7 @@
 package services
 
 import (
+	"gym-management/models/dtos"
 	"gym-management/models/entities"
 	"gym-management/repositories"
 )
@@ -15,6 +16,10 @@ func NewClassesService() *ClassesService {
 	}
 }
 
-func (serv *ClassesService) GetClassesSchedules() []entities.ClassSchedule {
-	return serv.classesRepository.GetClassesSchedules()
+func (service *ClassesService) GetClassesSchedules() *[]entities.ClassSchedule {
+	return service.classesRepository.GetClassesSchedules()
+}
+
+func (service *ClassesService) InsertNewClassSchedule(classSchedule *dtos.ClassScheduleDTO) (*entities.ClassSchedule, error) {
+	return service.classesRepository.InsertNewClassSchedule(classSchedule)
 }

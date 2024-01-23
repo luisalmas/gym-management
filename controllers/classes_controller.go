@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"gym-management/models/dtos"
 	"gym-management/services"
 	"net/http"
 
@@ -19,7 +20,7 @@ func NewClassesController() *ClassesController {
 
 func (ctrl *ClassesController) SetupRoutes(router *gin.RouterGroup) {
 	router.GET("/classes", ctrl.getClassesSchedules)
-	//router.POST("/classes", ctrl.service.GetItems)
+	router.POST("/classes", ctrl.postClassSchedule)
 	//router.PUT("/classes", ctrl.service.GetItems)
 }
 
@@ -32,4 +33,29 @@ func (ctrl *ClassesController) SetupRoutes(router *gin.RouterGroup) {
 // @Router       /classes [get]
 func (ctrl *ClassesController) getClassesSchedules(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, ctrl.service.GetClassesSchedules())
+}
+
+// PostClasses             godoc
+// @Summary      Post class
+// @Description  Post a new class.
+// @Tags         classes
+// @Produce      json
+//@Param         classScheduleDTO  body      dtos.ClassScheduleDTO true  "ClassScheduleDTO JSON"
+// @Success      201 {object} entities.ClassSchedule
+// @Error      	 400 
+// @Router       /classes [post]
+func (ctrl *ClassesController) postClassSchedule(c *gin.Context) {
+	var classSchedule dtos.ClassScheduleDTO
+
+	if err := c.BindJSON(&classSchedule); err != nil {
+        c.IndentedJSON(http.StatusBadRequest, err.Error())
+    }
+//TODO fix this Bind
+	insertedClassSchedule, err := ctrl.service.InsertNewClassSchedule(&classSchedule)
+
+	if err != nil{
+		c.IndentedJSON(http.StatusBadRequest, err.Error())
+	}
+
+	c.IndentedJSON(http.StatusCreated, insertedClassSchedule)
 }

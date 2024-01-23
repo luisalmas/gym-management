@@ -2,9 +2,9 @@ package dtos
 
 import "time"
 
-type ClassDTO struct {
-	Name       string
-	Start_date time.Time
-	End_date   time.Time
-	Capacity   int
+type ClassScheduleDTO struct {
+	Name       string 		`json:"name" binding:"required"`
+	Start_date time.Time	`json:"start_date" binding:"required"`
+	End_date   time.Time	`json:"end_date" binding:"required"`
+	Capacity   int			`json:"capacity" binding:"required"`
 }

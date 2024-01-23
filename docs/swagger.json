@@ -33,10 +33,62 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Post a new class.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "classes"
+                ],
+                "summary": "Post class",
+                "parameters": [
+                    {
+                        "description": "ClassScheduleDTO JSON",
+                        "name": "classScheduleDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ClassScheduleDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ClassSchedule"
+                        }
+                    }
+                }
             }
         }
     },
     "definitions": {
+        "dtos.ClassScheduleDTO": {
+            "type": "object",
+            "required": [
+                "capacity",
+                "end_date",
+                "name",
+                "start_date"
+            ],
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                }
+            }
+        },
         "entities.ClassSchedule": {
             "type": "object",
             "properties": {

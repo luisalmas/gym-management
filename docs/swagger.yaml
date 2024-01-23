@@ -1,5 +1,21 @@
 basePath: /api
 definitions:
+  dtos.ClassScheduleDTO:
+    properties:
+      capacity:
+        type: integer
+      end_date:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
+    required:
+    - capacity
+    - end_date
+    - name
+    - start_date
+    type: object
   entities.ClassSchedule:
     properties:
       capacity:
@@ -35,6 +51,25 @@ paths:
               $ref: '#/definitions/entities.ClassSchedule'
             type: array
       summary: Get classes
+      tags:
+      - classes
+    post:
+      description: Post a new class.
+      parameters:
+      - description: ClassScheduleDTO JSON
+        in: body
+        name: classScheduleDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ClassScheduleDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.ClassSchedule'
+      summary: Post class
       tags:
       - classes
 swagger: "2.0"
