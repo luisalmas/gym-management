@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"fmt"
 	"gym-management/models/dtos"
 	"gym-management/models/entities"
 	"time"
@@ -33,10 +34,11 @@ func (repo *ClassesRepository) GetClassesSchedules() *[]entities.ClassSchedule{
 
 func (repo *ClassesRepository) InsertNewClassSchedule(classScheduleDTO *dtos.ClassScheduleDTO) (*entities.ClassSchedule, error){
 	entity := &entities.ClassSchedule{}
-	classScheduleEntity, error := entity.New(classScheduleDTO)
+	classScheduleEntity, err := entity.New(classScheduleDTO)
 
-	if error != nil{
-		return nil, error
+	if err != nil{
+		fmt.Print("Boas")
+		return nil, err
 	}
 
 	classes = append(classes, *classScheduleEntity)

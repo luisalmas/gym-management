@@ -47,14 +47,18 @@ func (ctrl *ClassesController) getClassesSchedules(c *gin.Context) {
 func (ctrl *ClassesController) postClassSchedule(c *gin.Context) {
 	var classSchedule dtos.ClassScheduleDTO
 
+	//TODO fix bind
 	if err := c.BindJSON(&classSchedule); err != nil {
         c.IndentedJSON(http.StatusBadRequest, err.Error())
+		return
     }
-//TODO fix this Bind
+	
 	insertedClassSchedule, err := ctrl.service.InsertNewClassSchedule(&classSchedule)
 
 	if err != nil{
+	
 		c.IndentedJSON(http.StatusBadRequest, err.Error())
+		return
 	}
 
 	c.IndentedJSON(http.StatusCreated, insertedClassSchedule)
