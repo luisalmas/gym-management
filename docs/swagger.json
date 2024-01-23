@@ -1,7 +1,61 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "A book management service API in Go using Gin framework.",
+        "title": "Gym management API",
+        "contact": {
+            "name": "Luís Almas",
+            "email": "la_luisalmas@hotmail.com"
+        },
+        "version": "1.0"
     },
-    "paths": {}
+    "host": "localhost:8080",
+    "basePath": "/api",
+    "paths": {
+        "/classes": {
+            "get": {
+                "description": "Returns all scheduled classes.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "classes"
+                ],
+                "summary": "Get classes",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.ClassSchedule"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entities.ClassSchedule": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                }
+            }
+        }
+    }
 }

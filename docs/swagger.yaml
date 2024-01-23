@@ -1,4 +1,40 @@
+basePath: /api
+definitions:
+  entities.ClassSchedule:
+    properties:
+      capacity:
+        type: integer
+      end_date:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      start_date:
+        type: string
+    type: object
+host: localhost:8080
 info:
-  contact: {}
-paths: {}
+  contact:
+    email: la_luisalmas@hotmail.com
+    name: Luís Almas
+  description: A book management service API in Go using Gin framework.
+  title: Gym management API
+  version: "1.0"
+paths:
+  /classes:
+    get:
+      description: Returns all scheduled classes.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.ClassSchedule'
+            type: array
+      summary: Get classes
+      tags:
+      - classes
 swagger: "2.0"
