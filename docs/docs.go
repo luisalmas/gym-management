@@ -69,6 +69,71 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/classes/{id}": {
+            "get": {
+                "description": "Returns single class.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "classes"
+                ],
+                "summary": "Get class",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ClassSchedule Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ClassSchedule"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Updates a single class.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "classes"
+                ],
+                "summary": "Put classes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ClassSchedule Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "ClassScheduleDTO JSON",
+                        "name": "classScheduleDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ClassScheduleDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ClassSchedule"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

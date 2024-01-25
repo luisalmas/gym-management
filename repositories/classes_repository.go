@@ -32,15 +32,27 @@ func (repo *ClassesRepository) GetClassesSchedules() *[]entities.ClassSchedule{
 	return &classes
 }
 
-func (repo *ClassesRepository) InsertNewClassSchedule(classScheduleDTO *dtos.ClassScheduleDTO) (*entities.ClassSchedule, error){
-	entity := &entities.ClassSchedule{}
-	classScheduleEntity, err := entity.New(classScheduleDTO)
+func (repo *ClassesRepository) InsertNewClassSchedule(classSchedule *entities.ClassSchedule) (*entities.ClassSchedule, error){
+	classes = append(classes, *classSchedule)
+	return classSchedule, nil
+}
 
-	if err != nil{
-		fmt.Print("Boas")
-		return nil, err
+func (repo *ClassesRepository) GetClassSchedule(id int) (*entities.ClassSchedule, error){
+	for _, class := range classes {
+		if class.Id == id{
+			return &class, nil
+		}
 	}
+	return nil, fmt.Errorf("class not found")
+}
 
-	classes = append(classes, *classScheduleEntity)
-	return classScheduleEntity, nil
+func (repo *ClassesRepository) UpdateClassSchedule(id int, updatedClass *dtos.ClassScheduleDTO) (*entities.ClassSchedule, error){
+	currentClass, _ := repo.GetClassSchedule(id)
+
+	currentClass.Capacity = updatedClass.Capacity
+	currentClass.Start_date = updatedClass.Start_date
+	currentClass.End_date = updatedClass.End_date
+	currentClass.Name = updatedClass.Name
+
+	return currentClass, nil
 }

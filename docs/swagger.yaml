@@ -72,4 +72,47 @@ paths:
       summary: Post class
       tags:
       - classes
+  /classes/{id}:
+    get:
+      description: Returns single class.
+      parameters:
+      - description: ClassSchedule Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.ClassSchedule'
+      summary: Get class
+      tags:
+      - classes
+    put:
+      description: Updates a single class.
+      parameters:
+      - description: ClassSchedule Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: ClassScheduleDTO JSON
+        in: body
+        name: classScheduleDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ClassScheduleDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.ClassSchedule'
+      summary: Put classes
+      tags:
+      - classes
 swagger: "2.0"
