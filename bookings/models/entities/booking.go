@@ -1,7 +1,7 @@
 package entities
 
 import (
-	"gym-management/models/dtos"
+	"gym-management/bookings/models/dtos"
 	"time"
 )
 

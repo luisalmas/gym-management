@@ -2,8 +2,8 @@ package repositories
 
 import (
 	"errors"
-	"gym-management/models/dtos"
-	"gym-management/models/entities"
+	"gym-management/bookings/models/dtos"
+	"gym-management/bookings/models/entities"
 	"time"
 )
 

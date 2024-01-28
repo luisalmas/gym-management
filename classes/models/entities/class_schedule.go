@@ -2,7 +2,7 @@ package entities
 
 import (
 	"errors"
-	"gym-management/models/dtos"
+	"gym-management/classes/models/dtos"
 	"time"
 )
 

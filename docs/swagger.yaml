@@ -33,17 +33,17 @@ definitions:
     properties:
       capacity:
         type: integer
-      end_date:
+      endDate:
         type: string
       name:
         type: string
-      start_date:
+      startDate:
         type: string
     required:
     - capacity
-    - end_date
+    - endDate
     - name
-    - start_date
+    - startDate
     type: object
 host: localhost:8080
 info:

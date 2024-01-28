@@ -1,7 +1,8 @@
 package main
 
 import (
-	"gym-management/controllers"
+	bookings "gym-management/bookings/controllers"
+	classes "gym-management/classes/controllers"
 
 	_ "gym-management/docs" //import generated swagger doc files
 
@@ -23,8 +24,8 @@ func main() {
     router := gin.Default()
 	prefix := router.Group("/api")
 	
-	controllers.NewClassesController().SetupRoutes(prefix)
-	controllers.NewBookingsController().SetupRoutes(prefix)
+	classes.NewClassesController().SetupRoutes(prefix)
+	bookings.NewBookingsController().SetupRoutes(prefix)
 
 	//============= Swagger ==============================
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

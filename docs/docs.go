@@ -327,21 +327,21 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "capacity",
-                "end_date",
+                "endDate",
                 "name",
-                "start_date"
+                "startDate"
             ],
             "properties": {
                 "capacity": {
                     "type": "integer"
                 },
-                "end_date": {
+                "endDate": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "start_date": {
+                "startDate": {
                     "type": "string"
                 }
             }

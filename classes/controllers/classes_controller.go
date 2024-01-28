@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"gym-management/models/dtos"
-	"gym-management/services"
+	"gym-management/classes/models/dtos"
+	"gym-management/classes/services"
 	"net/http"
 	"strconv"
 

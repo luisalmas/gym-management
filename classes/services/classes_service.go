@@ -1,9 +1,9 @@
 package services
 
 import (
-	"gym-management/models/dtos"
-	"gym-management/models/entities"
-	"gym-management/repositories"
+	"gym-management/classes/models/dtos"
+	"gym-management/classes/models/entities"
+	"gym-management/classes/repositories"
 )
 
 type ClassesService struct {
