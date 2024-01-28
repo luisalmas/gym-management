@@ -18,6 +18,135 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/bookings": {
+            "get": {
+                "description": "Returns all bookings.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookings"
+                ],
+                "summary": "Get bookings",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dtos.BookingCompleteDTO"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Post a new booking.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookings"
+                ],
+                "summary": "Post booking",
+                "parameters": [
+                    {
+                        "description": "BookingDTO JSON",
+                        "name": "bookingDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.BookingDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.BookingCompleteDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/bookings/{id}": {
+            "get": {
+                "description": "Returns single booking.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookings"
+                ],
+                "summary": "Get booking",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Booking Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.BookingCompleteDTO"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "put": {
+                "description": "Updates a booking.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookings"
+                ],
+                "summary": "Put booking",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Booking Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "BookingDTO JSON",
+                        "name": "bookingDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.BookingDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.BookingCompleteDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
         "/classes": {
             "get": {
                 "description": "Returns all scheduled classes.",
@@ -34,7 +163,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.ClassSchedule"
+                                "$ref": "#/definitions/dtos.ClassScheduleCompleteDTO"
                             }
                         }
                     }
@@ -64,7 +193,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/entities.ClassSchedule"
+                            "$ref": "#/definitions/dtos.ClassScheduleCompleteDTO"
                         }
                     },
                     "400": {
@@ -96,7 +225,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.ClassSchedule"
+                            "$ref": "#/definitions/dtos.ClassScheduleCompleteDTO"
                         }
                     },
                     "404": {
@@ -105,7 +234,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Updates a single class.",
+                "description": "Updates a class.",
                 "produces": [
                     "application/json"
                 ],
@@ -135,7 +264,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.ClassSchedule"
+                            "$ref": "#/definitions/dtos.ClassScheduleCompleteDTO"
                         }
                     },
                     "400": {
@@ -149,6 +278,51 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dtos.BookingCompleteDTO": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.BookingDTO": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.ClassScheduleCompleteDTO": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "endDate": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "startDate": {
+                    "type": "string"
+                }
+            }
+        },
         "dtos.ClassScheduleDTO": {
             "type": "object",
             "required": [
@@ -168,26 +342,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "start_date": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.ClassSchedule": {
-            "type": "object",
-            "properties": {
-                "capacity": {
-                    "type": "integer"
-                },
-                "endDate": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "startDate": {
                     "type": "string"
                 }
             }

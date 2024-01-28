@@ -7,20 +7,20 @@ import (
 )
 
 type ClassesService struct {
-	classesRepository *repositories.ClassesRepository
+	ClassesRepository *repositories.ClassesRepository
 }
 
 func NewClassesService() *ClassesService {
 	return &ClassesService{
-		classesRepository: &repositories.ClassesRepository{},
+		ClassesRepository: &repositories.ClassesRepository{},
 	}
 }
 
-func (service *ClassesService) GetClassesSchedules() *[]entities.ClassSchedule {
-	return service.classesRepository.GetClassesSchedules()
+func (service *ClassesService) GetClassesSchedules() *[]dtos.ClassScheduleCompleteDTO {
+	return service.ClassesRepository.GetClassesSchedules()
 }
 
-func (service *ClassesService) InsertNewClassSchedule(classSchedule *dtos.ClassScheduleDTO) (*entities.ClassSchedule, error) {
+func (service *ClassesService) InsertNewClassSchedule(classSchedule *dtos.ClassScheduleDTO) (*dtos.ClassScheduleCompleteDTO, error) {
 	classEntity := &entities.ClassSchedule{}
 	classScheduleEntity, err := classEntity.New(classSchedule)
 
@@ -28,15 +28,16 @@ func (service *ClassesService) InsertNewClassSchedule(classSchedule *dtos.ClassS
 		return nil, err
 	}
 
-	return service.classesRepository.InsertNewClassSchedule(classScheduleEntity)
+	return service.ClassesRepository.InsertNewClassSchedule(classScheduleEntity)
 }
 
-func (service *ClassesService) GetClassSchedule(id int) (*entities.ClassSchedule, error) {
-	return service.classesRepository.GetClassSchedule(id)
+func (service *ClassesService) GetClassSchedule(id int) (*dtos.ClassScheduleCompleteDTO, error) {
+	classEntity, err := service.ClassesRepository.GetClassSchedule(id)
+	return classEntity.ToClassSheduleDTO(), err
 }
 
-func (service *ClassesService) UpdateClassSchedule(id int, classSchedule *dtos.ClassScheduleDTO) (*entities.ClassSchedule, error, error) {
-	currentClass, errGet := service.classesRepository.GetClassSchedule(id)
+func (service *ClassesService) UpdateClassSchedule(id int, classSchedule *dtos.ClassScheduleDTO) (*dtos.ClassScheduleCompleteDTO, error, error) {
+	currentClass, errGet := service.ClassesRepository.GetClassSchedule(id)
 
 	if errGet != nil {
 		return nil, errGet, nil
@@ -51,5 +52,5 @@ func (service *ClassesService) UpdateClassSchedule(id int, classSchedule *dtos.C
 
 	updatedClass.Id = currentClass.Id
 
-	return service.classesRepository.UpdateClassSchedule(id, updatedClass), nil, nil
+	return service.ClassesRepository.UpdateClassSchedule(id, updatedClass), nil, nil
 }

@@ -10,12 +10,12 @@ import (
 )
 
 type ClassesController struct {
-	service *services.ClassesService
+	ClassesService *services.ClassesService
 }
 
 func NewClassesController() *ClassesController {
 	return &ClassesController{
-		service: services.NewClassesService(),
+		ClassesService: services.NewClassesService(),
 	}
 }
 
@@ -26,24 +26,24 @@ func (ctrl *ClassesController) SetupRoutes(router *gin.RouterGroup) {
 	router.PUT("/classes/:id", ctrl.putClassSchedule)
 }
 
-// GetClasses             godoc
+// GetClasse             godoc
 // @Summary      Get classes
 // @Description  Returns all scheduled classes.
 // @Tags         classes
 // @Produce      json
-// @Success      200  {array}  entities.ClassSchedule
+// @Success      200  {array}  dtos.ClassScheduleCompleteDTO
 // @Router       /classes [get]
 func (ctrl *ClassesController) getClassesSchedules(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, ctrl.service.GetClassesSchedules())
+	c.IndentedJSON(http.StatusOK, ctrl.ClassesService.GetClassesSchedules())
 }
 
-// GetClasses             godoc
+// GetClass             godoc
 // @Summary      Get class
 // @Description  Returns single class.
 // @Tags         classes
 // @Produce      json
 //@Param         id  path      string true  "ClassSchedule Id"
-// @Success      200  {object}  entities.ClassSchedule
+// @Success      200  {object}  dtos.ClassScheduleCompleteDTO
 // @Failure      404
 // @Router       /classes/{id} [get]
 func (ctrl *ClassesController) getClassSchedule(c *gin.Context) {
@@ -52,7 +52,7 @@ func (ctrl *ClassesController) getClassSchedule(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, idError.Error())
 		return
 	}
-	class, err := ctrl.service.GetClassSchedule(id)
+	class, err := ctrl.ClassesService.GetClassSchedule(id)
 
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, err.Error())
@@ -68,7 +68,7 @@ func (ctrl *ClassesController) getClassSchedule(c *gin.Context) {
 // @Tags         classes
 // @Produce      json
 //@Param         classScheduleDTO  body      dtos.ClassScheduleDTO true  "ClassScheduleDTO JSON"
-// @Success      201 {object} entities.ClassSchedule
+// @Success      201 {object} dtos.ClassScheduleCompleteDTO
 // @Failure      400 
 // @Router       /classes [post]
 func (ctrl *ClassesController) postClassSchedule(c *gin.Context) {
@@ -79,7 +79,7 @@ func (ctrl *ClassesController) postClassSchedule(c *gin.Context) {
 		return
     }
 	
-	insertedClassSchedule, err := ctrl.service.InsertNewClassSchedule(&classSchedule)
+	insertedClassSchedule, err := ctrl.ClassesService.InsertNewClassSchedule(&classSchedule)
 
 	if err != nil{
 		c.IndentedJSON(http.StatusBadRequest, err.Error())
@@ -89,22 +89,23 @@ func (ctrl *ClassesController) postClassSchedule(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, insertedClassSchedule)
 }
 
-// GetClasses             godoc
+// PutClasses             godoc
 // @Summary      Put classes
-// @Description  Updates a single class.
+// @Description  Updates a class.
 // @Tags         classes
 // @Produce      json
 //@Param         id  path      string true  "ClassSchedule Id"
 //@Param         classScheduleDTO  body      dtos.ClassScheduleDTO true  "ClassScheduleDTO JSON"
-// @Success      200  {object}  entities.ClassSchedule
+// @Success      200  {object}  dtos.ClassScheduleCompleteDTO
 // @Failure      400
 // @Failure      404
 // @Router       /classes/{id} [put]
 func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 	
-	classSchedule, bodyClassError := getClassScheduleFromRequest(c)
-	if bodyClassError != nil {
-        c.IndentedJSON(http.StatusBadRequest, bodyClassError.Error())
+	var classSchedule dtos.ClassScheduleDTO
+
+	if err := c.BindJSON(&classSchedule); err != nil {
+        c.IndentedJSON(http.StatusBadRequest, err.Error())
 		return
     }
 
@@ -114,7 +115,7 @@ func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 		return
 	}
 
-	updatedClass, unfoundError, updateError := ctrl.service.UpdateClassSchedule(id, classSchedule)
+	updatedClass, unfoundError, updateError := ctrl.ClassesService.UpdateClassSchedule(id, &classSchedule)
 
 	if unfoundError != nil{
 		c.IndentedJSON(http.StatusNotFound, unfoundError.Error())
@@ -127,16 +128,4 @@ func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, updatedClass)
-}
-
-
-func getClassScheduleFromRequest(c *gin.Context) (*dtos.ClassScheduleDTO, error){
-	var classSchedule dtos.ClassScheduleDTO
-
-	if err := c.BindJSON(&classSchedule); err != nil {
-        c.IndentedJSON(http.StatusBadRequest, err.Error())
-		return nil, err
-    }
-
-	return &classSchedule, nil
 }

@@ -1,5 +1,34 @@
 basePath: /api
 definitions:
+  dtos.BookingCompleteDTO:
+    properties:
+      date:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  dtos.BookingDTO:
+    properties:
+      date:
+        type: string
+      name:
+        type: string
+    type: object
+  dtos.ClassScheduleCompleteDTO:
+    properties:
+      capacity:
+        type: integer
+      endDate:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      startDate:
+        type: string
+    type: object
   dtos.ClassScheduleDTO:
     properties:
       capacity:
@@ -16,19 +45,6 @@ definitions:
     - name
     - start_date
     type: object
-  entities.ClassSchedule:
-    properties:
-      capacity:
-        type: integer
-      endDate:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      startDate:
-        type: string
-    type: object
 host: localhost:8080
 info:
   contact:
@@ -38,6 +54,91 @@ info:
   title: Gym management API
   version: "1.0"
 paths:
+  /bookings:
+    get:
+      description: Returns all bookings.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.BookingCompleteDTO'
+            type: array
+      summary: Get bookings
+      tags:
+      - bookings
+    post:
+      description: Post a new booking.
+      parameters:
+      - description: BookingDTO JSON
+        in: body
+        name: bookingDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.BookingDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.BookingCompleteDTO'
+        "400":
+          description: Bad Request
+      summary: Post booking
+      tags:
+      - bookings
+  /bookings/{id}:
+    get:
+      description: Returns single booking.
+      parameters:
+      - description: Booking Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.BookingCompleteDTO'
+        "404":
+          description: Not Found
+      summary: Get booking
+      tags:
+      - bookings
+    put:
+      description: Updates a booking.
+      parameters:
+      - description: Booking Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: BookingDTO JSON
+        in: body
+        name: bookingDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.BookingDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.BookingCompleteDTO'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+      summary: Put booking
+      tags:
+      - bookings
   /classes:
     get:
       description: Returns all scheduled classes.
@@ -48,7 +149,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entities.ClassSchedule'
+              $ref: '#/definitions/dtos.ClassScheduleCompleteDTO'
             type: array
       summary: Get classes
       tags:
@@ -68,7 +169,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/entities.ClassSchedule'
+            $ref: '#/definitions/dtos.ClassScheduleCompleteDTO'
         "400":
           description: Bad Request
       summary: Post class
@@ -89,14 +190,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.ClassSchedule'
+            $ref: '#/definitions/dtos.ClassScheduleCompleteDTO'
         "404":
           description: Not Found
       summary: Get class
       tags:
       - classes
     put:
-      description: Updates a single class.
+      description: Updates a class.
       parameters:
       - description: ClassSchedule Id
         in: path
@@ -115,7 +216,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.ClassSchedule'
+            $ref: '#/definitions/dtos.ClassScheduleCompleteDTO'
         "400":
           description: Bad Request
         "404":

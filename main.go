@@ -24,6 +24,7 @@ func main() {
 	prefix := router.Group("/api")
 	
 	controllers.NewClassesController().SetupRoutes(prefix)
+	controllers.NewBookingsController().SetupRoutes(prefix)
 
 	//============= Swagger ==============================
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

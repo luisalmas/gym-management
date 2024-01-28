@@ -28,3 +28,13 @@ func (class *ClassSchedule) New(classScheduleDTO *dtos.ClassScheduleDTO) (*Class
 		Capacity: classScheduleDTO.Capacity,
 	}, nil
 }
+
+func (class *ClassSchedule) ToClassSheduleDTO() (*dtos.ClassScheduleCompleteDTO) {
+	return &dtos.ClassScheduleCompleteDTO{
+		Id: class.Id,
+		Name: class.Name,
+		StartDate: class.StartDate,
+		EndDate: class.EndDate,
+		Capacity: class.Capacity,
+	}
+}

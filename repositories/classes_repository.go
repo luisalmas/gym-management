@@ -1,7 +1,8 @@
 package repositories
 
 import (
-	"fmt"
+	"errors"
+	"gym-management/models/dtos"
 	"gym-management/models/entities"
 	"time"
 )
@@ -27,13 +28,17 @@ type ClassesRepository struct {
 	//db connection
 }
 
-func (repo *ClassesRepository) GetClassesSchedules() *[]entities.ClassSchedule{
-	return &classes
+func (repo *ClassesRepository) GetClassesSchedules() *[]dtos.ClassScheduleCompleteDTO{
+	classesDTO := []dtos.ClassScheduleCompleteDTO{}
+	for _, class := range classes {
+		classesDTO = append(classesDTO, *class.ToClassSheduleDTO())
+	}
+	return &classesDTO
 }
 
-func (repo *ClassesRepository) InsertNewClassSchedule(classSchedule *entities.ClassSchedule) (*entities.ClassSchedule, error){
+func (repo *ClassesRepository) InsertNewClassSchedule(classSchedule *entities.ClassSchedule) (*dtos.ClassScheduleCompleteDTO, error){
 	classes = append(classes, *classSchedule)
-	return classSchedule, nil
+	return (classSchedule.ToClassSheduleDTO()), nil
 }
 
 func (repo *ClassesRepository) GetClassSchedule(id int) (*entities.ClassSchedule, error){
@@ -42,10 +47,11 @@ func (repo *ClassesRepository) GetClassSchedule(id int) (*entities.ClassSchedule
 			return &classes[index], nil
 		}
 	}
-	return nil, fmt.Errorf("class not found")
+	return nil, errors.New("class not found")
 }
 
-func (repo *ClassesRepository) UpdateClassSchedule(id int, updatedClass *entities.ClassSchedule) (*entities.ClassSchedule){
+func (repo *ClassesRepository) UpdateClassSchedule(id int, updatedClass *entities.ClassSchedule) (*dtos.ClassScheduleCompleteDTO){
+	//This has already been done in the service, but the ideia is to simulate an insert
 	currentClass, _ := repo.GetClassSchedule(id)
 
 	currentClass.Capacity = updatedClass.Capacity
@@ -53,5 +59,5 @@ func (repo *ClassesRepository) UpdateClassSchedule(id int, updatedClass *entitie
 	currentClass.EndDate = updatedClass.EndDate
 	currentClass.Name = updatedClass.Name
 	
-	return currentClass
+	return currentClass.ToClassSheduleDTO()
 }
