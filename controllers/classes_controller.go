@@ -44,7 +44,7 @@ func (ctrl *ClassesController) getClassesSchedules(c *gin.Context) {
 // @Produce      json
 //@Param         id  path      string true  "ClassSchedule Id"
 // @Success      200  {object}  entities.ClassSchedule
-// @Error      	 404
+// @Failure      404
 // @Router       /classes/{id} [get]
 func (ctrl *ClassesController) getClassSchedule(c *gin.Context) {
 	id, idError := strconv.Atoi(c.Param("id"))
@@ -69,7 +69,7 @@ func (ctrl *ClassesController) getClassSchedule(c *gin.Context) {
 // @Produce      json
 //@Param         classScheduleDTO  body      dtos.ClassScheduleDTO true  "ClassScheduleDTO JSON"
 // @Success      201 {object} entities.ClassSchedule
-// @Error      	 400 
+// @Failure      400 
 // @Router       /classes [post]
 func (ctrl *ClassesController) postClassSchedule(c *gin.Context) {
 	var classSchedule dtos.ClassScheduleDTO
@@ -97,7 +97,8 @@ func (ctrl *ClassesController) postClassSchedule(c *gin.Context) {
 //@Param         id  path      string true  "ClassSchedule Id"
 //@Param         classScheduleDTO  body      dtos.ClassScheduleDTO true  "ClassScheduleDTO JSON"
 // @Success      200  {object}  entities.ClassSchedule
-// @Error      	 400
+// @Failure      400
+// @Failure      404
 // @Router       /classes/{id} [put]
 func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 	
@@ -113,7 +114,6 @@ func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 		return
 	}
 
-	//TODO fix this error when updating
 	updatedClass, updateClassError := ctrl.service.UpdateClassSchedule(id, classSchedule)
 
 	if updateClassError != nil{

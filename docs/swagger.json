@@ -60,6 +60,9 @@
                         "schema": {
                             "$ref": "#/definitions/entities.ClassSchedule"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             }
@@ -89,6 +92,9 @@
                         "schema": {
                             "$ref": "#/definitions/entities.ClassSchedule"
                         }
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 }
             },
@@ -125,6 +131,12 @@
                         "schema": {
                             "$ref": "#/definitions/entities.ClassSchedule"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 }
             }
@@ -160,7 +172,7 @@
                 "capacity": {
                     "type": "integer"
                 },
-                "end_date": {
+                "endDate": {
                     "type": "string"
                 },
                 "id": {
@@ -169,7 +181,7 @@
                 "name": {
                     "type": "string"
                 },
-                "start_date": {
+                "startDate": {
                     "type": "string"
                 }
             }

@@ -66,6 +66,9 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/entities.ClassSchedule"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             }
@@ -95,6 +98,9 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/entities.ClassSchedule"
                         }
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 }
             },
@@ -131,6 +137,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/entities.ClassSchedule"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 }
             }
@@ -166,7 +178,7 @@ const docTemplate = `{
                 "capacity": {
                     "type": "integer"
                 },
-                "end_date": {
+                "endDate": {
                     "type": "string"
                 },
                 "id": {
@@ -175,7 +187,7 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "start_date": {
+                "startDate": {
                     "type": "string"
                 }
             }
