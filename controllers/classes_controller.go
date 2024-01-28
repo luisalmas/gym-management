@@ -114,10 +114,15 @@ func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 		return
 	}
 
-	updatedClass, updateClassError := ctrl.service.UpdateClassSchedule(id, classSchedule)
+	updatedClass, unfoundError, updateError := ctrl.service.UpdateClassSchedule(id, classSchedule)
 
-	if updateClassError != nil{
-		c.IndentedJSON(http.StatusNotFound, updateClassError.Error())
+	if unfoundError != nil{
+		c.IndentedJSON(http.StatusNotFound, unfoundError.Error())
+		return
+	}
+
+	if updateError != nil{
+		c.IndentedJSON(http.StatusBadRequest, updateError.Error())
 		return
 	}
 

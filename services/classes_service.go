@@ -35,21 +35,21 @@ func (service *ClassesService) GetClassSchedule(id int) (*entities.ClassSchedule
 	return service.classesRepository.GetClassSchedule(id)
 }
 
-func (service *ClassesService) UpdateClassSchedule(id int, classSchedule *dtos.ClassScheduleDTO) (*entities.ClassSchedule, error) {
+func (service *ClassesService) UpdateClassSchedule(id int, classSchedule *dtos.ClassScheduleDTO) (*entities.ClassSchedule, error, error) {
 	currentClass, errGet := service.classesRepository.GetClassSchedule(id)
 
 	if errGet != nil {
-		return nil, errGet
+		return nil, errGet, nil
 	}
 
 	classEntity := &entities.ClassSchedule{}
 	updatedClass, errUpdate := classEntity.New(classSchedule)
 
 	if errUpdate != nil {
-		return nil, errUpdate
+		return nil, nil, errUpdate
 	}
 
 	updatedClass.Id = currentClass.Id
 
-	return service.classesRepository.UpdateClassSchedule(id, updatedClass), nil
+	return service.classesRepository.UpdateClassSchedule(id, updatedClass), nil, nil
 }
