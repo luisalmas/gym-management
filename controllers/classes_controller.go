@@ -116,7 +116,7 @@ func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 	//TODO fix this error when updating
 	updatedClass, updateClassError := ctrl.service.UpdateClassSchedule(id, classSchedule)
 
-	if updateClassError == nil{
+	if updateClassError != nil{
 		c.IndentedJSON(http.StatusNotFound, updateClassError.Error())
 		return
 	}

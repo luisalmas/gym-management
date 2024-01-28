@@ -9,22 +9,22 @@ import (
 type ClassSchedule struct {
 	Id		   int
 	Name       string
-	Start_date time.Time
-	End_date   time.Time
+	StartDate time.Time
+	EndDate   time.Time
 	Capacity   int
 }
 
 func (class *ClassSchedule) New(classScheduleDTO *dtos.ClassScheduleDTO) (*ClassSchedule, error) {
 
-	if classScheduleDTO.Start_date.Compare(classScheduleDTO.End_date) == 1 {
-		return nil, errors.New("ClassSchedule")
+	if classScheduleDTO.StartDate.Compare(classScheduleDTO.EndDate) == 1 {
+		return nil, errors.New("ClassSchedule: invalid dates")
 	}
 
 	return &ClassSchedule{
 		Id: 0,
 		Name: classScheduleDTO.Name,
-		Start_date: classScheduleDTO.Start_date,
-		End_date: classScheduleDTO.End_date,
+		StartDate: classScheduleDTO.StartDate,
+		EndDate: classScheduleDTO.EndDate,
 		Capacity: classScheduleDTO.Capacity,
 	}, nil
 }

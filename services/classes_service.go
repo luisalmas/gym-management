@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"gym-management/models/dtos"
 	"gym-management/models/entities"
 	"gym-management/repositories"
@@ -22,8 +21,8 @@ func (service *ClassesService) GetClassesSchedules() *[]entities.ClassSchedule {
 }
 
 func (service *ClassesService) InsertNewClassSchedule(classSchedule *dtos.ClassScheduleDTO) (*entities.ClassSchedule, error) {
-	entity := &entities.ClassSchedule{}
-	classScheduleEntity, err := entity.New(classSchedule)
+	classEntity := &entities.ClassSchedule{}
+	classScheduleEntity, err := classEntity.New(classSchedule)
 
 	if err != nil{
 		return nil, err
@@ -37,12 +36,20 @@ func (service *ClassesService) GetClassSchedule(id int) (*entities.ClassSchedule
 }
 
 func (service *ClassesService) UpdateClassSchedule(id int, classSchedule *dtos.ClassScheduleDTO) (*entities.ClassSchedule, error) {
-	_, err := service.classesRepository.GetClassSchedule(id)
+	currentClass, errGet := service.classesRepository.GetClassSchedule(id)
 
-	if err != nil {
-		fmt.Print(err.Error())
-		return nil, err
+	if errGet != nil {
+		return nil, errGet
 	}
 
-	return service.classesRepository.UpdateClassSchedule(id, classSchedule)
+	classEntity := &entities.ClassSchedule{}
+	updatedClass, errUpdate := classEntity.New(classSchedule)
+
+	if errUpdate != nil {
+		return nil, errUpdate
+	}
+
+	updatedClass.Id = currentClass.Id
+
+	return service.classesRepository.UpdateClassSchedule(id, updatedClass), nil
 }
