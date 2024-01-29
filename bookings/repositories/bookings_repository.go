@@ -36,6 +36,16 @@ func (repo *BookingsRepository) GetBookings() *[]dtos.BookingCompleteDTO {
 	return &bookingsDTO
 }
 
+func (repo *BookingsRepository) GetBookingsFromClass(classId int) *[]dtos.BookingCompleteDTO {
+	bookingsDTO := []dtos.BookingCompleteDTO{}
+	for _, booking := range bookings {
+		if booking.ClassId == classId {
+			bookingsDTO = append(bookingsDTO, *booking.ToBookingDTO())
+		}
+	}
+	return &bookingsDTO
+}
+
 func (repo *BookingsRepository) GetBooking(id int) (*entities.Booking, error) {
 	for index, booking := range bookings {
 		if booking.Id == id{

@@ -9,6 +9,7 @@ type Booking struct {
 	Id	int
 	Name       string
 	Date time.Time
+	ClassId int
 }
 
 func (booking *Booking) ToBookingDTO() (*dtos.BookingCompleteDTO) {
@@ -16,5 +17,6 @@ func (booking *Booking) ToBookingDTO() (*dtos.BookingCompleteDTO) {
 		Id: booking.Id,
 		Name: booking.Name,
 		Date: booking.Date,
+		ClassId: booking.ClassId,
 	}
 }
