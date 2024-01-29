@@ -7,4 +7,5 @@ type BookingsControllerInterface interface {
 	getBooking(c *gin.Context)
 	postBooking(c *gin.Context)
 	putBooking(c *gin.Context)
+	deleteBooking(c *gin.Context)
 }

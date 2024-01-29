@@ -59,3 +59,14 @@ func (repo * BookingsRepository) UpdateBooking(id int, updatedBooking *entities.
 
 	return currentBooking.ToBookingDTO()
 }
+
+func (repo * BookingsRepository) DeleteBooking(id int) (*dtos.BookingCompleteDTO, error) {
+	for index, booking := range bookings {
+		if booking.Id == id{
+			deletedBooking := booking
+			bookings = append(bookings[:index], bookings[index+1:]...)
+			return deletedBooking.ToBookingDTO(), nil
+		}
+	}
+	return nil, errors.New("no booking to delete")
+}

@@ -24,6 +24,7 @@ func (ctrl *BookingsController) SetupRoutes(router *gin.RouterGroup){
 	router.GET("/bookings/:id", ctrl.getBooking)
 	router.POST("/bookings", ctrl.postBooking)
 	router.PUT("/bookings/:id", ctrl.putBooking)
+	router.DELETE("/bookings/:id", ctrl.deleteBooking)
 }
 
 // GetCBookings             godoc
@@ -128,4 +129,36 @@ func (ctrl *BookingsController) putBooking(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, updatedBooking)
+}
+
+// DeleteBookings             godoc
+// @Summary      Delete booking
+// @Description  Deletes a booking.
+// @Tags         bookings
+// @Produce      json
+//@Param         id  path      string true  "Booking Id"
+// @Success      200 {object} dtos.BookingCompleteDTO
+// @Failure      400 
+// @Failure      404 
+// @Router       /bookings/{id} [delete]
+func (ctrl *BookingsController) deleteBooking(c *gin.Context) {
+	id, idError := strconv.Atoi(c.Param("id"))
+	if idError != nil {
+		c.IndentedJSON(http.StatusBadRequest, idError.Error())
+		return
+	}
+
+	deletedBooking, unfoundError, removeError := ctrl.BookingsService.DeleteBooking(id)
+
+	if unfoundError != nil{
+		c.IndentedJSON(http.StatusNotFound, unfoundError.Error())
+		return
+	}
+
+	if removeError != nil{
+		c.IndentedJSON(http.StatusBadRequest, removeError.Error())
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, deletedBooking)
 }

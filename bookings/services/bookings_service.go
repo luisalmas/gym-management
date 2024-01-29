@@ -51,3 +51,19 @@ func (service *BookingsService) UpdateBooking(id int, updatedBooking *dtos.Booki
 
 	return service.BookingsRepository.UpdateBooking(id, bookingEntity), nil, nil
 }
+
+func (service *BookingsService) DeleteBooking(id int) (*dtos.BookingCompleteDTO, error, error){
+	currentBooking, errGet := service.BookingsRepository.GetBooking(id)
+	
+	if errGet != nil {
+		return nil, errGet, nil
+	}
+
+	deletedBooking, errDelete := service.BookingsRepository.DeleteBooking(currentBooking.Id)
+
+	if errGet != nil {
+		return nil, nil, errDelete
+	}
+
+	return deletedBooking, nil, nil
+}

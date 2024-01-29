@@ -7,4 +7,5 @@ type BookingsServiceInterface interface {
 	GetBooking(id int) (*dtos.BookingCompleteDTO, error)
 	InsertNewBooking(newBooking *dtos.BookingDTO) (*dtos.BookingCompleteDTO, error)
 	UpdateBooking(id int, updatedBooking *dtos.BookingDTO) (*dtos.BookingCompleteDTO, error, error)
+	DeleteBooking(id int) (*dtos.BookingCompleteDTO, error, error)
 }

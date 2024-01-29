@@ -91,6 +91,28 @@ paths:
       tags:
       - bookings
   /bookings/{id}:
+    delete:
+      description: Deletes a booking.
+      parameters:
+      - description: Booking Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.BookingCompleteDTO'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+      summary: Delete booking
+      tags:
+      - bookings
     get:
       description: Returns single booking.
       parameters:

@@ -10,4 +10,5 @@ type BookingsRepositoryInterface interface {
 	GetBooking(id int) (*entities.Booking, error)
 	InsertNewBooking(newBooking *entities.Booking) (*dtos.BookingCompleteDTO, error)
 	UpdateBooking(id int, updatedBooking *entities.Booking) *dtos.BookingCompleteDTO
+	DeleteBooking(id int) (*dtos.BookingCompleteDTO, error)
 }
