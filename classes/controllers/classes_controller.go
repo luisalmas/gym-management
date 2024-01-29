@@ -10,7 +10,7 @@ import (
 )
 
 type ClassesController struct {
-	ClassesService *services.ClassesService
+	ClassesService services.ClassesServiceInterface
 }
 
 func NewClassesController() *ClassesController {
@@ -24,6 +24,7 @@ func (ctrl *ClassesController) SetupRoutes(router *gin.RouterGroup) {
 	router.GET("/classes/:id", ctrl.getClassSchedule)
 	router.POST("/classes", ctrl.postClassSchedule)
 	router.PUT("/classes/:id", ctrl.putClassSchedule)
+	router.DELETE("/classes/:id", ctrl.deleteClassSchedule)
 }
 
 // GetClasse             godoc
@@ -128,4 +129,36 @@ func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, updatedClass)
+}
+
+// DelteClasses             godoc
+// @Summary      Delete classes
+// @Description  Deletes a class.
+// @Tags         classes
+// @Produce      json
+//@Param         id  path      string true  "ClassSchedule Id"
+// @Success      200  {object}  dtos.ClassScheduleCompleteDTO
+// @Failure      400
+// @Failure      404
+// @Router       /classes/{id} [delete]
+func (ctrl *ClassesController) deleteClassSchedule(c *gin.Context) {
+	id, idError := strconv.Atoi(c.Param("id"))
+	if idError != nil {
+		c.IndentedJSON(http.StatusBadRequest, idError.Error())
+		return
+	}
+
+	deletedClass, unfoundError, deleteError := ctrl.ClassesService.DeleteClassSchedule(id)
+
+	if unfoundError != nil{
+		c.IndentedJSON(http.StatusNotFound, unfoundError.Error())
+		return
+	}
+
+	if deleteError != nil{
+		c.IndentedJSON(http.StatusBadRequest, deleteError.Error())
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, deletedClass)
 }

@@ -10,7 +10,7 @@ import (
 )
 
 type BookingsController struct {
-	BookingsService *services.BookingsService
+	BookingsService services.BookingsServiceInterface
 }
 
 func NewBookingsController() *BookingsController {

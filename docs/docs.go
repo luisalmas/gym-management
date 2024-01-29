@@ -307,6 +307,39 @@ const docTemplate = `{
                         "description": "Not Found"
                     }
                 }
+            },
+            "delete": {
+                "description": "Deletes a class.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "classes"
+                ],
+                "summary": "Delete classes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ClassSchedule Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ClassScheduleCompleteDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
             }
         }
     },

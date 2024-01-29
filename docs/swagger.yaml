@@ -198,6 +198,28 @@ paths:
       tags:
       - classes
   /classes/{id}:
+    delete:
+      description: Deletes a class.
+      parameters:
+      - description: ClassSchedule Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.ClassScheduleCompleteDTO'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+      summary: Delete classes
+      tags:
+      - classes
     get:
       description: Returns single class.
       parameters:

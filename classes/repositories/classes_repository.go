@@ -61,3 +61,14 @@ func (repo *ClassesRepository) UpdateClassSchedule(id int, updatedClass *entitie
 	
 	return currentClass.ToClassSheduleDTO()
 }
+
+func (repo *ClassesRepository) DeleteClassSchedule(id int) (*dtos.ClassScheduleCompleteDTO, error) {
+	for index, class := range classes {
+		if class.Id == id{
+			deletedClass := class
+			classes = append(classes[:index], classes[index+1:]...)
+			return deletedClass.ToClassSheduleDTO(), nil
+		}
+	}
+	return nil, errors.New("no booking to delete")
+}

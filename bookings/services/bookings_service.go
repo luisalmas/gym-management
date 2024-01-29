@@ -7,7 +7,7 @@ import (
 )
 
 type BookingsService struct {
-	BookingsRepository *repositories.BookingsRepository
+	BookingsRepository repositories.BookingsRepositoryInterface
 }
 
 func NewBookingsService() *BookingsService {
