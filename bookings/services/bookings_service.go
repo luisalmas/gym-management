@@ -23,16 +23,6 @@ func (service *BookingsService) GetBookings() *[]dtos.BookingCompleteDTO {
 	return service.BookingsRepository.GetBookings()
 }
 
-func (service *BookingsService) GetBookingsFromClass(classId int) (*[]dtos.BookingCompleteDTO, error) {
-	_, errGetClass := service.ClassesService.GetClassSchedule(classId)
-
-	if errGetClass != nil {
-		return nil, errGetClass
-	}
-
-	return service.BookingsRepository.GetBookingsFromClass(classId), nil
-}
-
 func (service *BookingsService) GetBooking(id int) (*dtos.BookingCompleteDTO, error) {
 	bookingEntity, err := service.BookingsRepository.GetBooking(id)
 	return bookingEntity.ToBookingDTO(), err

@@ -2,6 +2,7 @@ package entities
 
 import (
 	"errors"
+	bookingDtos "gym-management/bookings/models/dtos"
 	"gym-management/classes/models/dtos"
 	"time"
 )
@@ -36,5 +37,16 @@ func (class *ClassSchedule) ToClassSheduleDTO() (*dtos.ClassScheduleCompleteDTO)
 		StartDate: class.StartDate,
 		EndDate: class.EndDate,
 		Capacity: class.Capacity,
+	}
+}
+
+func (class *ClassSchedule) ToClassSheduleWithBookingsDTO(classBookings []bookingDtos.BookingCompleteDTO) (*dtos.ClassScheduleWithBookingsDTO) {
+	return &dtos.ClassScheduleWithBookingsDTO{
+		Id: class.Id,
+		Name: class.Name,
+		StartDate: class.StartDate,
+		EndDate: class.EndDate,
+		Capacity: class.Capacity,
+		Bookings: classBookings,
 	}
 }

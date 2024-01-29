@@ -2,6 +2,8 @@ basePath: /api
 definitions:
   dtos.BookingCompleteDTO:
     properties:
+      classId:
+        type: integer
       date:
         type: string
       id:
@@ -11,6 +13,8 @@ definitions:
     type: object
   dtos.BookingDTO:
     properties:
+      classId:
+        type: integer
       date:
         type: string
       name:

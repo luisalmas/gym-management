@@ -1,6 +1,7 @@
 package services
 
 import (
+	bookingsRepos "gym-management/bookings/repositories"
 	"gym-management/classes/models/dtos"
 	"gym-management/classes/models/entities"
 	"gym-management/classes/repositories"
@@ -12,11 +13,13 @@ type ClassesService struct {
 
 func NewClassesService() *ClassesService {
 	return &ClassesService{
-		ClassesRepository: &repositories.ClassesRepository{},
+		ClassesRepository: &repositories.ClassesRepository{
+			BookingsRepository: &bookingsRepos.BookingsRepository{},
+		},
 	}
 }
 
-func (service *ClassesService) GetClassesSchedules() *[]dtos.ClassScheduleCompleteDTO {
+func (service *ClassesService) GetClassesSchedules() *[]dtos.ClassScheduleWithBookingsDTO {
 	return service.ClassesRepository.GetClassesSchedules()
 }
 

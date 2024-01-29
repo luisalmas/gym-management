@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"errors"
+	"gym-management/bookings/repositories"
 	"gym-management/classes/models/dtos"
 	"gym-management/classes/models/entities"
 	"time"
@@ -25,13 +26,13 @@ var classes = []entities.ClassSchedule{
 }
 
 type ClassesRepository struct {
-	//db connection
+	BookingsRepository repositories.BookingsRepositoryInterface
 }
 
-func (repo *ClassesRepository) GetClassesSchedules() *[]dtos.ClassScheduleCompleteDTO{
-	classesDTO := []dtos.ClassScheduleCompleteDTO{}
+func (repo *ClassesRepository) GetClassesSchedules() *[]dtos.ClassScheduleWithBookingsDTO{
+	classesDTO := []dtos.ClassScheduleWithBookingsDTO{}
 	for _, class := range classes {
-		classesDTO = append(classesDTO, *class.ToClassSheduleDTO())
+		classesDTO = append(classesDTO, *class.ToClassSheduleWithBookingsDTO(*repo.BookingsRepository.GetBookingsFromClass(class.Id)))
 	}
 	return &classesDTO
 }

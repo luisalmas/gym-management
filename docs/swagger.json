@@ -341,6 +341,9 @@
         "dtos.BookingCompleteDTO": {
             "type": "object",
             "properties": {
+                "classId": {
+                    "type": "integer"
+                },
                 "date": {
                     "type": "string"
                 },
@@ -355,6 +358,9 @@
         "dtos.BookingDTO": {
             "type": "object",
             "properties": {
+                "classId": {
+                    "type": "integer"
+                },
                 "date": {
                     "type": "string"
                 },

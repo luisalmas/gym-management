@@ -347,6 +347,9 @@ const docTemplate = `{
         "dtos.BookingCompleteDTO": {
             "type": "object",
             "properties": {
+                "classId": {
+                    "type": "integer"
+                },
                 "date": {
                     "type": "string"
                 },
@@ -361,6 +364,9 @@ const docTemplate = `{
         "dtos.BookingDTO": {
             "type": "object",
             "properties": {
+                "classId": {
+                    "type": "integer"
+                },
                 "date": {
                     "type": "string"
                 },

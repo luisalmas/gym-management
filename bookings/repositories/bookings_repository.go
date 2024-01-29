@@ -12,11 +12,13 @@ var bookings = []entities.Booking {
 		Id: 1,
 		Name: "Peter",
 		Date: time.Date(2024, time.January, 25,  0, 0, 0, 0, time.UTC),
+		ClassId: 1,
 	},
 	{
 		Id: 2,
 		Name: "Samantha",
 		Date: time.Date(2024, time.January, 25,  0, 0, 0, 0, time.UTC),
+		ClassId: 1,
 	},
 }
 
