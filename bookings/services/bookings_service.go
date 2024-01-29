@@ -12,7 +12,7 @@ type BookingsService struct {
 
 func NewBookingsService() *BookingsService {
 	return &BookingsService{
-		BookingsRepository: &repositories.BookingsRepository{},
+		BookingsRepository: repositories.NewBookingsRepository(),
 	}
 }
 

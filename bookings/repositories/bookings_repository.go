@@ -24,6 +24,10 @@ type BookingsRepository struct {
 	//db connection
 }
 
+func NewBookingsRepository() *BookingsRepository{
+	return &BookingsRepository{}
+}
+
 func (repo *BookingsRepository) GetBookings() *[]dtos.BookingCompleteDTO {
 	bookingsDTO := []dtos.BookingCompleteDTO{}
 	for _, booking := range bookings {
