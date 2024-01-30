@@ -6,6 +6,7 @@ import (
 	"gym-management/classes/models/dtos"
 	"gym-management/classes/models/entities"
 	"gym-management/classes/repositories"
+	"time"
 )
 
 type ClassesService struct {
@@ -75,12 +76,12 @@ func (service *ClassesService) DeleteClassSchedule(id int) (*dtos.ClassScheduleC
 	return deletedClass, nil, nil
 }
 
-func (service *ClassesService) GetBookingsFromClass(id int) (*[]bookingsDtos.BookingCompleteDTO, error){
+func (service *ClassesService) GetBookingsFromClass(id int, date time.Time) (*[]bookingsDtos.BookingCompleteDTO, error){
 	_, errGet := service.ClassesRepository.GetClassSchedule(id)
 
 	if errGet != nil {
 		return nil, errGet
 	}
 
-	return service.BookingsRepository.GetBookingsFromClass(id), nil
+	return service.BookingsRepository.GetBookingsFromClass(id, date), nil
 }

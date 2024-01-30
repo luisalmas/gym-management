@@ -38,11 +38,15 @@ func (repo *BookingsRepository) GetBookings() *[]dtos.BookingCompleteDTO {
 	return &bookingsDTO
 }
 
-func (repo *BookingsRepository) GetBookingsFromClass(classId int) *[]dtos.BookingCompleteDTO {
+func (repo *BookingsRepository) GetBookingsFromClass(classId int, date time.Time) *[]dtos.BookingCompleteDTO {
 	bookingsDTO := []dtos.BookingCompleteDTO{}
 	for _, booking := range bookings {
 		if booking.ClassId == classId {
-			bookingsDTO = append(bookingsDTO, *booking.ToBookingDTO())
+			if date.IsZero() {
+				bookingsDTO = append(bookingsDTO, *booking.ToBookingDTO())
+			}else if booking.Date == date{
+				bookingsDTO = append(bookingsDTO, *booking.ToBookingDTO())
+			}
 		}
 	}
 	return &bookingsDTO

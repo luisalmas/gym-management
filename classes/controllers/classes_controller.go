@@ -5,6 +5,7 @@ import (
 	"gym-management/classes/services"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -169,7 +170,8 @@ func (ctrl *ClassesController) deleteClassSchedule(c *gin.Context) {
 // @Description  Returns the bookings of a class.
 // @Tags         classes
 // @Produce      json
-//@Param         id  path      string true  "ClassSchedule Id"
+//@Param         id  path      string 	true  	"ClassSchedule Id"
+//@Param    	date query 		string	false	"Class date"	
 // @Success      200  {array}  dtos.BookingCompleteDTO
 // @Failure      404
 // @Router       /classes/{id}/bookings [get]
@@ -180,7 +182,21 @@ func (ctrl *ClassesController) getClassBookings(c *gin.Context){
 		return
 	}
 
-	bookings, err := ctrl.ClassesService.GetBookingsFromClass(id)
+	dateStr := c.DefaultQuery("date", "")
+	var date time.Time
+	var err error
+
+	
+	if dateStr != "" {
+		if date , err = time.Parse(time.RFC3339, dateStr) ; err != nil {
+			c.IndentedJSON(http.StatusBadRequest, err.Error())
+			return
+		}
+	}else{
+		date = time.Time{}
+	}
+
+	bookings, err := ctrl.ClassesService.GetBookingsFromClass(id, date)
 
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, err.Error())

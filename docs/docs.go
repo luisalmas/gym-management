@@ -359,6 +359,12 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Class date",
+                        "name": "date",
+                        "in": "query"
                     }
                 ],
                 "responses": {

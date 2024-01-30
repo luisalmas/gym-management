@@ -281,6 +281,10 @@ paths:
         name: id
         required: true
         type: string
+      - description: Class date
+        in: query
+        name: date
+        type: string
       produces:
       - application/json
       responses:
