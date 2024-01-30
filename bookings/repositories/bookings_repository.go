@@ -62,7 +62,7 @@ func (repo *BookingsRepository) GetBooking(id int) (*entities.Booking, error) {
 }
 
 func (repo * BookingsRepository) InsertNewBooking(newBooking *entities.Booking) (*dtos.BookingCompleteDTO, error) {
-	newBooking.BookingId = len(bookings)
+	newBooking.BookingId = len(bookings) + 1
 	bookings = append(bookings, *newBooking)
 	return newBooking.ToBookingDTO(), nil
 }

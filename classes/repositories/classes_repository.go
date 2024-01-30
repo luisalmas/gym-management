@@ -36,7 +36,7 @@ func (repo *ClassesRepository) GetClassesSchedules() *[]dtos.ClassCompleteDTO{
 }
 
 func (repo *ClassesRepository) InsertNewClassSchedule(classSchedule *entities.Class) (*dtos.ClassCompleteDTO, error){
-	classSchedule.ClassId = len(classes)
+	classSchedule.ClassId = len(classes) + 1
 	classes = append(classes, *classSchedule)
 	return (classSchedule.ToClassSheduleDTO()), nil
 }
