@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var classes = []entities.ClassSchedule{
+var classes = []entities.Class{
 	{
 		ClassId: 1,
 		Name: "Class1",
@@ -27,21 +27,21 @@ var classes = []entities.ClassSchedule{
 type ClassesRepository struct {
 }
 
-func (repo *ClassesRepository) GetClassesSchedules() *[]dtos.ClassScheduleCompleteDTO{
-	classesDTO := []dtos.ClassScheduleCompleteDTO{}
+func (repo *ClassesRepository) GetClassesSchedules() *[]dtos.ClassCompleteDTO{
+	classesDTO := []dtos.ClassCompleteDTO{}
 	for _, class := range classes {
 		classesDTO = append(classesDTO, *class.ToClassSheduleDTO())
 	}
 	return &classesDTO
 }
 
-func (repo *ClassesRepository) InsertNewClassSchedule(classSchedule *entities.ClassSchedule) (*dtos.ClassScheduleCompleteDTO, error){
+func (repo *ClassesRepository) InsertNewClassSchedule(classSchedule *entities.Class) (*dtos.ClassCompleteDTO, error){
 	classSchedule.ClassId = len(classes)
 	classes = append(classes, *classSchedule)
 	return (classSchedule.ToClassSheduleDTO()), nil
 }
 
-func (repo *ClassesRepository) GetClassSchedule(id int) (*entities.ClassSchedule, error){
+func (repo *ClassesRepository) GetClassSchedule(id int) (*entities.Class, error){
 	for index, class := range classes {
 		if class.ClassId == id{
 			return &classes[index], nil
@@ -50,7 +50,7 @@ func (repo *ClassesRepository) GetClassSchedule(id int) (*entities.ClassSchedule
 	return nil, errors.New("class not found")
 }
 
-func (repo *ClassesRepository) UpdateClassSchedule(id int, updatedClass *entities.ClassSchedule) (*dtos.ClassScheduleCompleteDTO){
+func (repo *ClassesRepository) UpdateClassSchedule(id int, updatedClass *entities.Class) (*dtos.ClassCompleteDTO){
 	//This has already been done in the service, but the ideia is to simulate an insert
 	currentClass, _ := repo.GetClassSchedule(id)
 
@@ -62,7 +62,7 @@ func (repo *ClassesRepository) UpdateClassSchedule(id int, updatedClass *entitie
 	return currentClass.ToClassSheduleDTO()
 }
 
-func (repo *ClassesRepository) DeleteClassSchedule(id int) (*dtos.ClassScheduleCompleteDTO, error) {
+func (repo *ClassesRepository) DeleteClassSchedule(id int) (*dtos.ClassCompleteDTO, error) {
 	for index, class := range classes {
 		if class.ClassId == id{
 			deletedClass := class

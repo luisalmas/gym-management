@@ -34,7 +34,7 @@ func (ctrl *ClassesController) SetupRoutes(router *gin.RouterGroup) {
 // @Description  Returns all scheduled classes.
 // @Tags         classes
 // @Produce      json
-// @Success      200  {array}  dtos.ClassScheduleCompleteDTO
+// @Success      200  {array}  dtos.ClassCompleteDTO
 // @Router       /classes [get]
 func (ctrl *ClassesController) getClassesSchedules(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, ctrl.ClassesService.GetClassesSchedules())
@@ -46,7 +46,7 @@ func (ctrl *ClassesController) getClassesSchedules(c *gin.Context) {
 // @Tags         classes
 // @Produce      json
 //@Param         id  path      string true  "ClassSchedule Id"
-// @Success      200  {object}  dtos.ClassScheduleCompleteDTO
+// @Success      200  {object}  dtos.ClassCompleteDTO
 // @Failure      404
 // @Router       /classes/{id} [get]
 func (ctrl *ClassesController) getClassSchedule(c *gin.Context) {
@@ -70,12 +70,12 @@ func (ctrl *ClassesController) getClassSchedule(c *gin.Context) {
 // @Description  Post a new class.
 // @Tags         classes
 // @Produce      json
-//@Param         classScheduleDTO  body      dtos.ClassScheduleDTO true  "ClassScheduleDTO JSON"
-// @Success      201 {object} dtos.ClassScheduleCompleteDTO
+//@Param         ClassDTO  body      dtos.ClassDTO true  "ClassDTO JSON"
+// @Success      201 {object} dtos.ClassCompleteDTO
 // @Failure      400 
 // @Router       /classes [post]
 func (ctrl *ClassesController) postClassSchedule(c *gin.Context) {
-	var classSchedule dtos.ClassScheduleDTO
+	var classSchedule dtos.ClassDTO
 
 	if err := c.BindJSON(&classSchedule); err != nil {
         c.IndentedJSON(http.StatusBadRequest, err.Error())
@@ -98,14 +98,14 @@ func (ctrl *ClassesController) postClassSchedule(c *gin.Context) {
 // @Tags         classes
 // @Produce      json
 //@Param         id  path      string true  "ClassSchedule Id"
-//@Param         classScheduleDTO  body      dtos.ClassScheduleDTO true  "ClassScheduleDTO JSON"
-// @Success      200  {object}  dtos.ClassScheduleCompleteDTO
+//@Param         ClassDTO  body      dtos.ClassDTO true  "ClassDTO JSON"
+// @Success      200  {object}  dtos.ClassCompleteDTO
 // @Failure      400
 // @Failure      404
 // @Router       /classes/{id} [put]
 func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 	
-	var classSchedule dtos.ClassScheduleDTO
+	var classSchedule dtos.ClassDTO
 
 	if err := c.BindJSON(&classSchedule); err != nil {
         c.IndentedJSON(http.StatusBadRequest, err.Error())
@@ -139,7 +139,7 @@ func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 // @Tags         classes
 // @Produce      json
 //@Param         id  path      string true  "ClassSchedule Id"
-// @Success      200  {object}  dtos.ClassScheduleCompleteDTO
+// @Success      200  {object}  dtos.ClassCompleteDTO
 // @Failure      400
 // @Failure      404
 // @Router       /classes/{id} [delete]

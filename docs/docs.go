@@ -196,7 +196,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dtos.ClassScheduleCompleteDTO"
+                                "$ref": "#/definitions/dtos.ClassCompleteDTO"
                             }
                         }
                     }
@@ -213,12 +213,12 @@ const docTemplate = `{
                 "summary": "Post class",
                 "parameters": [
                     {
-                        "description": "ClassScheduleDTO JSON",
-                        "name": "classScheduleDTO",
+                        "description": "ClassDTO JSON",
+                        "name": "ClassDTO",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dtos.ClassScheduleDTO"
+                            "$ref": "#/definitions/dtos.ClassDTO"
                         }
                     }
                 ],
@@ -226,7 +226,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dtos.ClassScheduleCompleteDTO"
+                            "$ref": "#/definitions/dtos.ClassCompleteDTO"
                         }
                     },
                     "400": {
@@ -258,7 +258,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dtos.ClassScheduleCompleteDTO"
+                            "$ref": "#/definitions/dtos.ClassCompleteDTO"
                         }
                     },
                     "404": {
@@ -284,12 +284,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "ClassScheduleDTO JSON",
-                        "name": "classScheduleDTO",
+                        "description": "ClassDTO JSON",
+                        "name": "ClassDTO",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dtos.ClassScheduleDTO"
+                            "$ref": "#/definitions/dtos.ClassDTO"
                         }
                     }
                 ],
@@ -297,7 +297,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dtos.ClassScheduleCompleteDTO"
+                            "$ref": "#/definitions/dtos.ClassCompleteDTO"
                         }
                     },
                     "400": {
@@ -330,7 +330,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dtos.ClassScheduleCompleteDTO"
+                            "$ref": "#/definitions/dtos.ClassCompleteDTO"
                         }
                     },
                     "400": {
@@ -362,7 +362,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Class date",
+                        "description": "Class date in RFC3339",
                         "name": "date",
                         "in": "query"
                     }
@@ -416,7 +416,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dtos.ClassScheduleCompleteDTO": {
+        "dtos.ClassCompleteDTO": {
             "type": "object",
             "properties": {
                 "capacity": {
@@ -436,7 +436,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dtos.ClassScheduleDTO": {
+        "dtos.ClassDTO": {
             "type": "object",
             "required": [
                 "capacity",

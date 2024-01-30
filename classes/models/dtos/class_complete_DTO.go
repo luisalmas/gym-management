@@ -2,7 +2,7 @@ package dtos
 
 import "time"
 
-type ClassScheduleCompleteDTO struct {
+type ClassCompleteDTO struct {
 	ClassId        int
 	Name      string
 	StartDate time.Time

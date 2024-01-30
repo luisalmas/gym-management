@@ -21,12 +21,12 @@ func NewClassesService() *ClassesService {
 	}
 }
 
-func (service *ClassesService) GetClassesSchedules() *[]dtos.ClassScheduleCompleteDTO {
+func (service *ClassesService) GetClassesSchedules() *[]dtos.ClassCompleteDTO {
 	return service.ClassesRepository.GetClassesSchedules()
 }
 
-func (service *ClassesService) InsertNewClassSchedule(classSchedule *dtos.ClassScheduleDTO) (*dtos.ClassScheduleCompleteDTO, error) {
-	classEntity := &entities.ClassSchedule{}
+func (service *ClassesService) InsertNewClassSchedule(classSchedule *dtos.ClassDTO) (*dtos.ClassCompleteDTO, error) {
+	classEntity := &entities.Class{}
 	classScheduleEntity, err := classEntity.New(classSchedule)
 
 	if err != nil{
@@ -36,19 +36,19 @@ func (service *ClassesService) InsertNewClassSchedule(classSchedule *dtos.ClassS
 	return service.ClassesRepository.InsertNewClassSchedule(classScheduleEntity)
 }
 
-func (service *ClassesService) GetClassSchedule(id int) (*dtos.ClassScheduleCompleteDTO, error) {
+func (service *ClassesService) GetClassSchedule(id int) (*dtos.ClassCompleteDTO, error) {
 	classEntity, err := service.ClassesRepository.GetClassSchedule(id)
 	return classEntity.ToClassSheduleDTO(), err
 }
 
-func (service *ClassesService) UpdateClassSchedule(id int, classSchedule *dtos.ClassScheduleDTO) (*dtos.ClassScheduleCompleteDTO, error, error) {
+func (service *ClassesService) UpdateClassSchedule(id int, classSchedule *dtos.ClassDTO) (*dtos.ClassCompleteDTO, error, error) {
 	currentClass, errGet := service.ClassesRepository.GetClassSchedule(id)
 
 	if errGet != nil {
 		return nil, errGet, nil
 	}
 
-	classEntity := &entities.ClassSchedule{}
+	classEntity := &entities.Class{}
 	updatedClass, errUpdate := classEntity.New(classSchedule)
 
 	if errUpdate != nil {
@@ -60,7 +60,7 @@ func (service *ClassesService) UpdateClassSchedule(id int, classSchedule *dtos.C
 	return service.ClassesRepository.UpdateClassSchedule(id, updatedClass), nil, nil
 }
 
-func (service *ClassesService) DeleteClassSchedule(id int) (*dtos.ClassScheduleCompleteDTO, error, error) {
+func (service *ClassesService) DeleteClassSchedule(id int) (*dtos.ClassCompleteDTO, error, error) {
 	currentClass, errGet := service.ClassesRepository.GetClassSchedule(id)
 
 	if errGet != nil {

@@ -20,7 +20,7 @@ definitions:
       name:
         type: string
     type: object
-  dtos.ClassScheduleCompleteDTO:
+  dtos.ClassCompleteDTO:
     properties:
       capacity:
         type: integer
@@ -33,7 +33,7 @@ definitions:
       startDate:
         type: string
     type: object
-  dtos.ClassScheduleDTO:
+  dtos.ClassDTO:
     properties:
       capacity:
         type: integer
@@ -175,7 +175,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/dtos.ClassScheduleCompleteDTO'
+              $ref: '#/definitions/dtos.ClassCompleteDTO'
             type: array
       summary: Get classes
       tags:
@@ -183,19 +183,19 @@ paths:
     post:
       description: Post a new class.
       parameters:
-      - description: ClassScheduleDTO JSON
+      - description: ClassDTO JSON
         in: body
-        name: classScheduleDTO
+        name: ClassDTO
         required: true
         schema:
-          $ref: '#/definitions/dtos.ClassScheduleDTO'
+          $ref: '#/definitions/dtos.ClassDTO'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dtos.ClassScheduleCompleteDTO'
+            $ref: '#/definitions/dtos.ClassCompleteDTO'
         "400":
           description: Bad Request
       summary: Post class
@@ -216,7 +216,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dtos.ClassScheduleCompleteDTO'
+            $ref: '#/definitions/dtos.ClassCompleteDTO'
         "400":
           description: Bad Request
         "404":
@@ -238,7 +238,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dtos.ClassScheduleCompleteDTO'
+            $ref: '#/definitions/dtos.ClassCompleteDTO'
         "404":
           description: Not Found
       summary: Get class
@@ -252,19 +252,19 @@ paths:
         name: id
         required: true
         type: string
-      - description: ClassScheduleDTO JSON
+      - description: ClassDTO JSON
         in: body
-        name: classScheduleDTO
+        name: ClassDTO
         required: true
         schema:
-          $ref: '#/definitions/dtos.ClassScheduleDTO'
+          $ref: '#/definitions/dtos.ClassDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dtos.ClassScheduleCompleteDTO'
+            $ref: '#/definitions/dtos.ClassCompleteDTO'
         "400":
           description: Bad Request
         "404":
@@ -281,7 +281,7 @@ paths:
         name: id
         required: true
         type: string
-      - description: Class date
+      - description: Class date in RFC3339
         in: query
         name: date
         type: string
