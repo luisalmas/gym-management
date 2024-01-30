@@ -14,18 +14,22 @@ type Class struct {
 	Capacity   int
 }
 
-func (class *Class) New(classScheduleDTO *dtos.ClassDTO) (*Class, error) {
+func (class *Class) New(classDTO *dtos.ClassDTO) (*Class, error) {
 
-	if classScheduleDTO.StartDate.Compare(classScheduleDTO.EndDate) == 1 {
-		return nil, errors.New("ClassSchedule: invalid dates")
+	if classDTO.StartDate.Compare(classDTO.EndDate) == 1 {
+		return nil, errors.New("Class: invalid dates")
+	}
+
+	if class.Capacity < 1 {
+		return nil, errors.New("Class: cannot have capacity less than 1")
 	}
 
 	return &Class{
 		ClassId: 0,
-		Name: classScheduleDTO.Name,
-		StartDate: classScheduleDTO.StartDate,
-		EndDate: classScheduleDTO.EndDate,
-		Capacity: classScheduleDTO.Capacity,
+		Name: classDTO.Name,
+		StartDate: classDTO.StartDate,
+		EndDate: classDTO.EndDate,
+		Capacity: classDTO.Capacity,
 	}, nil
 }
 
