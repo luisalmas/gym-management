@@ -171,7 +171,7 @@ func (ctrl *ClassesController) deleteClassSchedule(c *gin.Context) {
 // @Tags         classes
 // @Produce      json
 //@Param         id  path      string 	true  	"ClassSchedule Id"
-//@Param    	date query 		string	false	"Class date"	
+//@Param    	date query 		string	false	"Class date in RFC3339"	
 // @Success      200  {array}  dtos.BookingCompleteDTO
 // @Failure      404
 // @Router       /classes/{id}/bookings [get]
