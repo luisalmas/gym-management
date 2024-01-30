@@ -3,7 +3,7 @@ package dtos
 import "time"
 
 type BookingDTO struct {
-	Name string
-	Date time.Time
-	ClassId int
-}
+	Name string `json:"name" binding:"required"`
+	Date time.Time `json:"date" binding:"required"`
+	ClassId int `json:"classId" binding:"required"`
+} 
