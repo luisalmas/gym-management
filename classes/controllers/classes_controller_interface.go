@@ -7,4 +7,5 @@ type ClassesControllerInterface interface {
 	getClassSchedule(c *gin.Context)
 	postClassSchedule(c *gin.Context)
 	putClassSchedule(c *gin.Context)
+	getClassBookings(c *gin.Context)
 }

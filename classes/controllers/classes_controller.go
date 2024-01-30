@@ -25,6 +25,7 @@ func (ctrl *ClassesController) SetupRoutes(router *gin.RouterGroup) {
 	router.POST("/classes", ctrl.postClassSchedule)
 	router.PUT("/classes/:id", ctrl.putClassSchedule)
 	router.DELETE("/classes/:id", ctrl.deleteClassSchedule)
+	router.GET("/classes/:id/bookings", ctrl.getClassBookings)
 }
 
 // GetClasse             godoc
@@ -162,3 +163,29 @@ func (ctrl *ClassesController) deleteClassSchedule(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, deletedClass)
 }
+
+// GetClass             godoc
+// @Summary      Get class bookings
+// @Description  Returns the bookings of a class.
+// @Tags         classes
+// @Produce      json
+//@Param         id  path      string true  "ClassSchedule Id"
+// @Success      200  {array}  dtos.BookingCompleteDTO
+// @Failure      404
+// @Router       /classes/{id}/bookings [get]
+func (ctrl *ClassesController) getClassBookings(c *gin.Context){
+	id, idError := strconv.Atoi(c.Param("id"))
+	if idError != nil {
+		c.IndentedJSON(http.StatusBadRequest, idError.Error())
+		return
+	}
+
+	bookings, err := ctrl.ClassesService.GetBookingsFromClass(id)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusNotFound, err.Error())
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, bookings)
+}	

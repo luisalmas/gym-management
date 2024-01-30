@@ -1,6 +1,8 @@
 package services
 
 import (
+	bookingsDtos "gym-management/bookings/models/dtos"
+	bookingsRepo "gym-management/bookings/repositories"
 	"gym-management/classes/models/dtos"
 	"gym-management/classes/models/entities"
 	"gym-management/classes/repositories"
@@ -8,11 +10,13 @@ import (
 
 type ClassesService struct {
 	ClassesRepository repositories.ClassesRepositoryInterface
+	BookingsRepository bookingsRepo.BookingsRepositoryInterface
 }
 
 func NewClassesService() *ClassesService {
 	return &ClassesService{
 		ClassesRepository: &repositories.ClassesRepository{},
+		BookingsRepository: &bookingsRepo.BookingsRepository{},
 	}
 }
 
@@ -69,4 +73,14 @@ func (service *ClassesService) DeleteClassSchedule(id int) (*dtos.ClassScheduleC
 	}
 
 	return deletedClass, nil, nil
+}
+
+func (service *ClassesService) GetBookingsFromClass(id int) (*[]bookingsDtos.BookingCompleteDTO, error){
+	_, errGet := service.ClassesRepository.GetClassSchedule(id)
+
+	if errGet != nil {
+		return nil, errGet
+	}
+
+	return service.BookingsRepository.GetBookingsFromClass(id), nil
 }

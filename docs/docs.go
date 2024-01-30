@@ -196,7 +196,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dtos.ClassScheduleWithBookingsDTO"
+                                "$ref": "#/definitions/dtos.ClassScheduleCompleteDTO"
                             }
                         }
                     }
@@ -341,6 +341,41 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/classes/{id}/bookings": {
+            "get": {
+                "description": "Returns the bookings of a class.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "classes"
+                ],
+                "summary": "Get class bookings",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ClassSchedule Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dtos.BookingCompleteDTO"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -405,32 +440,6 @@ const docTemplate = `{
             ],
             "properties": {
                 "capacity": {
-                    "type": "integer"
-                },
-                "endDate": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "startDate": {
-                    "type": "string"
-                }
-            }
-        },
-        "dtos.ClassScheduleWithBookingsDTO": {
-            "type": "object",
-            "properties": {
-                "bookings": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dtos.BookingCompleteDTO"
-                    }
-                },
-                "capacity": {
-                    "type": "integer"
-                },
-                "classId": {
                     "type": "integer"
                 },
                 "endDate": {

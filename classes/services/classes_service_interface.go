@@ -1,6 +1,9 @@
 package services
 
-import "gym-management/classes/models/dtos"
+import (
+	bookingsDtos "gym-management/bookings/models/dtos"
+	"gym-management/classes/models/dtos"
+)
 
 type ClassesServiceInterface interface {
 	GetClassesSchedules() *[]dtos.ClassScheduleCompleteDTO
@@ -8,4 +11,5 @@ type ClassesServiceInterface interface {
 	GetClassSchedule(id int) (*dtos.ClassScheduleCompleteDTO, error)
 	UpdateClassSchedule(id int, classSchedule *dtos.ClassScheduleDTO) (*dtos.ClassScheduleCompleteDTO, error, error)
 	DeleteClassSchedule(id int) (*dtos.ClassScheduleCompleteDTO, error, error)
+	GetBookingsFromClass(id int) (*[]bookingsDtos.BookingCompleteDTO, error)
 }

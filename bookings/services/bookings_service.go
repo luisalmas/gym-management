@@ -4,18 +4,18 @@ import (
 	"gym-management/bookings/models/dtos"
 	"gym-management/bookings/models/entities"
 	"gym-management/bookings/repositories"
-	"gym-management/classes/services"
+	classesRepo "gym-management/classes/repositories"
 )
 
 type BookingsService struct {
 	BookingsRepository repositories.BookingsRepositoryInterface
-	ClassesService services.ClassesServiceInterface
+	ClassesRepository classesRepo.ClassesRepositoryInterface
 }
 
 func NewBookingsService() *BookingsService {
 	return &BookingsService{
 		BookingsRepository: repositories.NewBookingsRepository(),
-		ClassesService: services.NewClassesService(),
+		ClassesRepository: &classesRepo.ClassesRepository{},
 	}
 }
 
@@ -29,7 +29,7 @@ func (service *BookingsService) GetBooking(id int) (*dtos.BookingCompleteDTO, er
 }
 
 func (service *BookingsService) InsertNewBooking(newBooking *dtos.BookingDTO) (*dtos.BookingCompleteDTO, error){
-	_, errGetClass := service.ClassesService.GetClassSchedule(newBooking.ClassId)
+	_, errGetClass := service.ClassesRepository.GetClassSchedule(newBooking.ClassId)
 
 	if errGetClass != nil {
 		return nil, errGetClass
