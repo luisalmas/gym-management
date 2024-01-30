@@ -15,12 +15,12 @@ func TestGetBookings(t *testing.T) {
 
 	require.Equal(t, *bookings, []dtos.BookingCompleteDTO {
 		{
-			Id: 1,
+			BookingId: 1,
 			Name: "Peter",
 			Date: time.Date(2024, time.January, 25,  0, 0, 0, 0, time.UTC),
 		},
 		{
-			Id: 2,
+			BookingId: 2,
 			Name: "Samantha",
 			Date: time.Date(2024, time.January, 25,  0, 0, 0, 0, time.UTC),
 		},
@@ -34,7 +34,7 @@ func TestGetBooking(t *testing.T){
 
 	require.Nil(t, err1)
 	require.Equal(t, *validBooking, entities.Booking{
-			Id: 1,
+			BookingId: 1,
 			Name: "Peter",
 			Date: time.Date(2024, time.January, 25,  0, 0, 0, 0, time.UTC),
 		})

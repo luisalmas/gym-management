@@ -35,7 +35,7 @@ func (service *BookingsService) InsertNewBooking(newBooking *dtos.BookingDTO) (*
 		return nil, errGetClass
 	}
 
-	return service.BookingsRepository.InsertNewBooking(&entities.Booking{Name: newBooking.Name, Date: newBooking.Date})
+	return service.BookingsRepository.InsertNewBooking(&entities.Booking{Name: newBooking.Name, Date: newBooking.Date, ClassId: newBooking.ClassId})
 }
 
 func (service *BookingsService) UpdateBooking(id int, updatedBooking *dtos.BookingDTO) (*dtos.BookingCompleteDTO, error, error){
@@ -46,7 +46,7 @@ func (service *BookingsService) UpdateBooking(id int, updatedBooking *dtos.Booki
 	}
 
 	bookingEntity := &entities.Booking{
-		Id: currentBooking.Id,
+		BookingId: currentBooking.BookingId,
 		Name: updatedBooking.Name,
 		Date: updatedBooking.Date,
 	}
@@ -64,7 +64,7 @@ func (service *BookingsService) DeleteBooking(id int) (*dtos.BookingCompleteDTO,
 		return nil, errGet, nil
 	}
 
-	deletedBooking, errDelete := service.BookingsRepository.DeleteBooking(currentBooking.Id)
+	deletedBooking, errDelete := service.BookingsRepository.DeleteBooking(currentBooking.BookingId)
 
 	if errGet != nil {
 		return nil, nil, errDelete

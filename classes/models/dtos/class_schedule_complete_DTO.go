@@ -3,7 +3,7 @@ package dtos
 import "time"
 
 type ClassScheduleCompleteDTO struct {
-	Id        int
+	ClassId        int
 	Name      string
 	StartDate time.Time
 	EndDate   time.Time

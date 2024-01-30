@@ -9,13 +9,13 @@ import (
 
 var bookings = []entities.Booking {
 	{
-		Id: 1,
+		BookingId: 1,
 		Name: "Peter",
 		Date: time.Date(2024, time.January, 25,  0, 0, 0, 0, time.UTC),
 		ClassId: 1,
 	},
 	{
-		Id: 2,
+		BookingId: 2,
 		Name: "Samantha",
 		Date: time.Date(2024, time.January, 25,  0, 0, 0, 0, time.UTC),
 		ClassId: 1,
@@ -50,7 +50,7 @@ func (repo *BookingsRepository) GetBookingsFromClass(classId int) *[]dtos.Bookin
 
 func (repo *BookingsRepository) GetBooking(id int) (*entities.Booking, error) {
 	for index, booking := range bookings {
-		if booking.Id == id{
+		if booking.BookingId == id{
 			return &bookings[index], nil
 		}
 	}
@@ -74,7 +74,7 @@ func (repo * BookingsRepository) UpdateBooking(id int, updatedBooking *entities.
 
 func (repo * BookingsRepository) DeleteBooking(id int) (*dtos.BookingCompleteDTO, error) {
 	for index, booking := range bookings {
-		if booking.Id == id{
+		if booking.BookingId == id{
 			deletedBooking := booking
 			bookings = append(bookings[:index], bookings[index+1:]...)
 			return deletedBooking.ToBookingDTO(), nil

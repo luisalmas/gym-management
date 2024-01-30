@@ -2,13 +2,12 @@ package entities
 
 import (
 	"errors"
-	bookingDtos "gym-management/bookings/models/dtos"
 	"gym-management/classes/models/dtos"
 	"time"
 )
 
 type ClassSchedule struct {
-	Id		   int
+	ClassId		   int
 	Name       string
 	StartDate time.Time
 	EndDate   time.Time
@@ -22,7 +21,7 @@ func (class *ClassSchedule) New(classScheduleDTO *dtos.ClassScheduleDTO) (*Class
 	}
 
 	return &ClassSchedule{
-		Id: 0,
+		ClassId: 0,
 		Name: classScheduleDTO.Name,
 		StartDate: classScheduleDTO.StartDate,
 		EndDate: classScheduleDTO.EndDate,
@@ -32,7 +31,7 @@ func (class *ClassSchedule) New(classScheduleDTO *dtos.ClassScheduleDTO) (*Class
 
 func (class *ClassSchedule) ToClassSheduleDTO() (*dtos.ClassScheduleCompleteDTO) {
 	return &dtos.ClassScheduleCompleteDTO{
-		Id: class.Id,
+		ClassId: class.ClassId,
 		Name: class.Name,
 		StartDate: class.StartDate,
 		EndDate: class.EndDate,
@@ -40,13 +39,13 @@ func (class *ClassSchedule) ToClassSheduleDTO() (*dtos.ClassScheduleCompleteDTO)
 	}
 }
 
-func (class *ClassSchedule) ToClassSheduleWithBookingsDTO(classBookings []bookingDtos.BookingCompleteDTO) (*dtos.ClassScheduleWithBookingsDTO) {
+/*func (class *ClassSchedule) ToClassSheduleWithBookingsDTO(classBookings []bookingDtos.BookingCompleteDTO) (*dtos.ClassScheduleWithBookingsDTO) {
 	return &dtos.ClassScheduleWithBookingsDTO{
-		Id: class.Id,
+		ClassId: class.ClassId,
 		Name: class.Name,
 		StartDate: class.StartDate,
 		EndDate: class.EndDate,
 		Capacity: class.Capacity,
 		Bookings: classBookings,
 	}
-}
+}*/

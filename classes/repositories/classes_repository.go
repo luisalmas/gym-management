@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"errors"
-	"gym-management/bookings/repositories"
 	"gym-management/classes/models/dtos"
 	"gym-management/classes/models/entities"
 	"time"
@@ -10,14 +9,14 @@ import (
 
 var classes = []entities.ClassSchedule{
 	{
-		Id: 1,
+		ClassId: 1,
 		Name: "Class1",
 		StartDate: time.Date(2024, time.January, 22, 0, 0, 0, 0, time.UTC),
 		EndDate: time.Date(2024, time.January, 28,  0, 0, 0, 0, time.UTC),
 		Capacity: 10,
 	},
 	{
-		Id: 2,
+		ClassId: 2,
 		Name: "Class2",
 		StartDate: time.Date(2024, time.January, 22, 0, 0, 0, 0, time.UTC),
 		EndDate: time.Date(2024, time.January, 28,  0, 0, 0, 0, time.UTC),
@@ -26,13 +25,12 @@ var classes = []entities.ClassSchedule{
 }
 
 type ClassesRepository struct {
-	BookingsRepository repositories.BookingsRepositoryInterface
 }
 
-func (repo *ClassesRepository) GetClassesSchedules() *[]dtos.ClassScheduleWithBookingsDTO{
-	classesDTO := []dtos.ClassScheduleWithBookingsDTO{}
+func (repo *ClassesRepository) GetClassesSchedules() *[]dtos.ClassScheduleCompleteDTO{
+	classesDTO := []dtos.ClassScheduleCompleteDTO{}
 	for _, class := range classes {
-		classesDTO = append(classesDTO, *class.ToClassSheduleWithBookingsDTO(*repo.BookingsRepository.GetBookingsFromClass(class.Id)))
+		classesDTO = append(classesDTO, *class.ToClassSheduleDTO())
 	}
 	return &classesDTO
 }
@@ -44,7 +42,7 @@ func (repo *ClassesRepository) InsertNewClassSchedule(classSchedule *entities.Cl
 
 func (repo *ClassesRepository) GetClassSchedule(id int) (*entities.ClassSchedule, error){
 	for index, class := range classes {
-		if class.Id == id{
+		if class.ClassId == id{
 			return &classes[index], nil
 		}
 	}
@@ -65,7 +63,7 @@ func (repo *ClassesRepository) UpdateClassSchedule(id int, updatedClass *entitie
 
 func (repo *ClassesRepository) DeleteClassSchedule(id int) (*dtos.ClassScheduleCompleteDTO, error) {
 	for index, class := range classes {
-		if class.Id == id{
+		if class.ClassId == id{
 			deletedClass := class
 			classes = append(classes[:index], classes[index+1:]...)
 			return deletedClass.ToClassSheduleDTO(), nil

@@ -6,7 +6,7 @@ import (
 )
 
 type Booking struct {
-	Id	int
+	BookingId	int
 	Name       string
 	Date time.Time
 	ClassId int
@@ -14,7 +14,7 @@ type Booking struct {
 
 func (booking *Booking) ToBookingDTO() (*dtos.BookingCompleteDTO) {
 	return &dtos.BookingCompleteDTO{
-		Id: booking.Id,
+		BookingId: booking.BookingId,
 		Name: booking.Name,
 		Date: booking.Date,
 		ClassId: booking.ClassId,

@@ -24,7 +24,7 @@ func main() {
     router := gin.Default()
 	prefix := router.Group("/api")
 	
-	classes.NewClassesController().SetupRoutes(prefix)
+	classes.NewClassesController().SetupRoutes(prefix) 
 	bookings.NewBookingsController().SetupRoutes(prefix)
 
 	//============= Swagger ==============================

@@ -4,8 +4,9 @@ Test implementation of a service in Go of a gym management
 
 #### Todo
 
-    - Remove is missing
-    - Logic for bookings
+    - remove ClassId from bookings inside classes
+    - add /classes/id/bokkings ...
+    - Logic for bookings (Validate bookings insert and update)
     - Tests
     - Error types
     - Remove `Interface` from interfaces and add Impl to impleentations

@@ -2,12 +2,12 @@ basePath: /api
 definitions:
   dtos.BookingCompleteDTO:
     properties:
+      bookingId:
+        type: integer
       classId:
         type: integer
       date:
         type: string
-      id:
-        type: integer
       name:
         type: string
     type: object
@@ -24,10 +24,10 @@ definitions:
     properties:
       capacity:
         type: integer
+      classId:
+        type: integer
       endDate:
         type: string
-      id:
-        type: integer
       name:
         type: string
       startDate:
@@ -48,6 +48,23 @@ definitions:
     - endDate
     - name
     - startDate
+    type: object
+  dtos.ClassScheduleWithBookingsDTO:
+    properties:
+      bookings:
+        items:
+          $ref: '#/definitions/dtos.BookingCompleteDTO'
+        type: array
+      capacity:
+        type: integer
+      classId:
+        type: integer
+      endDate:
+        type: string
+      name:
+        type: string
+      startDate:
+        type: string
     type: object
 host: localhost:8080
 info:
@@ -175,7 +192,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/dtos.ClassScheduleCompleteDTO'
+              $ref: '#/definitions/dtos.ClassScheduleWithBookingsDTO'
             type: array
       summary: Get classes
       tags:
