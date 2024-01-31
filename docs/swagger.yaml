@@ -10,6 +10,11 @@ definitions:
         type: string
       name:
         type: string
+    required:
+    - bookingId
+    - classId
+    - date
+    - name
     type: object
   dtos.BookingDTO:
     properties:
@@ -19,6 +24,10 @@ definitions:
         type: string
       name:
         type: string
+    required:
+    - classId
+    - date
+    - name
     type: object
   dtos.ClassCompleteDTO:
     properties:

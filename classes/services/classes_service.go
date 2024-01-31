@@ -73,6 +73,8 @@ func (service *ClassesService) DeleteClassSchedule(id int) (*dtos.ClassCompleteD
 		return nil, nil, errorDelete
 	}
 
+	service.BookingsRepository.DeleteBookingsFromClass(deletedClass.ClassId, time.Time{})
+
 	return deletedClass, nil, nil
 }
 

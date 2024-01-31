@@ -381,6 +381,12 @@
     "definitions": {
         "dtos.BookingCompleteDTO": {
             "type": "object",
+            "required": [
+                "bookingId",
+                "classId",
+                "date",
+                "name"
+            ],
             "properties": {
                 "bookingId": {
                     "type": "integer"
@@ -398,6 +404,11 @@
         },
         "dtos.BookingDTO": {
             "type": "object",
+            "required": [
+                "classId",
+                "date",
+                "name"
+            ],
             "properties": {
                 "classId": {
                     "type": "integer"
