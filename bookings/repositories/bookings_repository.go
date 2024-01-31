@@ -88,13 +88,18 @@ func (repo * BookingsRepository) DeleteBooking(id int) (*dtos.BookingCompleteDTO
 	return nil, errors.New("no booking to delete")
 }
 
-func (repo *BookingsRepository) DeleteBookingsFromClass(classId int) *[]dtos.BookingCompleteDTO{
+func (repo *BookingsRepository) DeleteBookingsFromClass(classId int, dateStart time.Time, dateEnd time.Time) *[]dtos.BookingCompleteDTO{
 	bookingsFromClass := repo.GetBookingsFromClass(classId ,time.Time{})
 	var deletedBookings []dtos.BookingCompleteDTO
 
 	for _, booking := range *bookingsFromClass{
-		deletedBooking, _ := repo.DeleteBooking(booking.BookingId)
-		deletedBookings = append(deletedBookings, *deletedBooking)
+		if dateStart.IsZero() && dateEnd.IsZero() {
+			deletedBooking, _ := repo.DeleteBooking(booking.BookingId)
+			deletedBookings = append(deletedBookings, *deletedBooking)
+		} else if booking.Date.Compare(dateStart) == -1  || booking.Date.Compare(dateEnd) == 1 {
+			deletedBooking, _ := repo.DeleteBooking(booking.BookingId)
+			deletedBookings = append(deletedBookings, *deletedBooking)
+		}
 	}
 
 	return &deletedBookings

@@ -20,7 +20,7 @@ func (class *Class) New(classDTO *dtos.ClassDTO) (*Class, error) {
 		return nil, errors.New("Class: invalid dates")
 	}
 
-	if class.Capacity < 1 {
+	if classDTO.Capacity < 1 {
 		return nil, errors.New("Class: cannot have capacity less than 1")
 	}
 

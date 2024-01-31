@@ -57,6 +57,9 @@ func (service *ClassesService) UpdateClassSchedule(id int, classSchedule *dtos.C
 
 	updatedClass.ClassId = currentClass.ClassId
 
+	//Cascade delete (for bookings outside the date range of the class)
+	service.BookingsRepository.DeleteBookingsFromClass(updatedClass.ClassId, updatedClass.StartDate, updatedClass.EndDate)
+
 	return service.ClassesRepository.UpdateClassSchedule(id, updatedClass), nil, nil
 }
 
@@ -74,7 +77,7 @@ func (service *ClassesService) DeleteClassSchedule(id int) (*dtos.ClassCompleteD
 	}
 
 	//Cascade delete
-	service.BookingsRepository.DeleteBookingsFromClass(deletedClass.ClassId)
+	service.BookingsRepository.DeleteBookingsFromClass(deletedClass.ClassId, time.Time{}, time.Time{})
 
 	return deletedClass, nil, nil
 }
