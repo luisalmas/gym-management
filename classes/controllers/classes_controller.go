@@ -11,7 +11,7 @@ import (
 )
 
 type ClassesController struct {
-	ClassesService services.ClassesServiceInterface
+	ClassesService services.ClassesService
 }
 
 func NewClassesController() *ClassesController {

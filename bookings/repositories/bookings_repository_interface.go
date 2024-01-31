@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type BookingsRepositoryInterface interface {
+type BookingsRepository interface {
 	GetBookings() *[]dtos.BookingCompleteDTO
 	GetBooking(id int) (*entities.Booking, error)
 	GetBookingsFromClass(classId int, date time.Time) *[]dtos.BookingCompleteDTO

@@ -5,7 +5,7 @@ import (
 	"gym-management/classes/models/entities"
 )
 
-type ClassesRepositoryInterface interface {
+type ClassesRepository interface {
 	GetClassesSchedules() *[]dtos.ClassCompleteDTO
 	InsertNewClassSchedule(classSchedule *entities.Class) (*dtos.ClassCompleteDTO, error)
 	GetClassSchedule(id int) (*entities.Class, error)

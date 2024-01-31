@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type ClassesServiceInterface interface {
+type ClassesService interface {
 	GetClassesSchedules() *[]dtos.ClassCompleteDTO
 	InsertNewClassSchedule(classSchedule *dtos.ClassDTO) (*dtos.ClassCompleteDTO, error)
 	GetClassSchedule(id int) (*dtos.ClassCompleteDTO, error)

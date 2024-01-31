@@ -22,15 +22,15 @@ var bookings = []entities.Booking {
 	},
 }
 
-type BookingsRepository struct {
+type BookingsRepositoryImpl struct {
 	//db connection
 }
 
-func NewBookingsRepository() *BookingsRepository{
-	return &BookingsRepository{}
+func NewBookingsRepository() *BookingsRepositoryImpl{
+	return &BookingsRepositoryImpl{}
 }
 
-func (repo *BookingsRepository) GetBookings() *[]dtos.BookingCompleteDTO {
+func (repo *BookingsRepositoryImpl) GetBookings() *[]dtos.BookingCompleteDTO {
 	bookingsDTO := []dtos.BookingCompleteDTO{}
 	for _, booking := range bookings {
 		bookingsDTO = append(bookingsDTO, *booking.ToBookingDTO())
@@ -38,7 +38,7 @@ func (repo *BookingsRepository) GetBookings() *[]dtos.BookingCompleteDTO {
 	return &bookingsDTO
 }
 
-func (repo *BookingsRepository) GetBookingsFromClass(classId int, date time.Time) *[]dtos.BookingCompleteDTO {
+func (repo *BookingsRepositoryImpl) GetBookingsFromClass(classId int, date time.Time) *[]dtos.BookingCompleteDTO {
 	bookingsDTO := []dtos.BookingCompleteDTO{}
 	for _, booking := range bookings {
 		if booking.ClassId == classId {
@@ -52,7 +52,7 @@ func (repo *BookingsRepository) GetBookingsFromClass(classId int, date time.Time
 	return &bookingsDTO
 }
 
-func (repo *BookingsRepository) GetBooking(id int) (*entities.Booking, error) {
+func (repo *BookingsRepositoryImpl) GetBooking(id int) (*entities.Booking, error) {
 	for index, booking := range bookings {
 		if booking.BookingId == id{
 			return &bookings[index], nil
@@ -61,13 +61,13 @@ func (repo *BookingsRepository) GetBooking(id int) (*entities.Booking, error) {
 	return nil, errors.New("booking not found")
 }
 
-func (repo * BookingsRepository) InsertNewBooking(newBooking *entities.Booking) (*dtos.BookingCompleteDTO, error) {
+func (repo * BookingsRepositoryImpl) InsertNewBooking(newBooking *entities.Booking) (*dtos.BookingCompleteDTO, error) {
 	newBooking.BookingId = len(bookings) + 1
 	bookings = append(bookings, *newBooking)
 	return newBooking.ToBookingDTO(), nil
 }
 
-func (repo * BookingsRepository) UpdateBooking(id int, updatedBooking *entities.Booking) (*dtos.BookingCompleteDTO) {
+func (repo * BookingsRepositoryImpl) UpdateBooking(id int, updatedBooking *entities.Booking) (*dtos.BookingCompleteDTO) {
 	//Already done in service (simulate DB)
 	currentBooking, _ := repo.GetBooking(id)
 
@@ -77,7 +77,7 @@ func (repo * BookingsRepository) UpdateBooking(id int, updatedBooking *entities.
 	return currentBooking.ToBookingDTO()
 }
 
-func (repo * BookingsRepository) DeleteBooking(id int) (*dtos.BookingCompleteDTO, error) {
+func (repo * BookingsRepositoryImpl) DeleteBooking(id int) (*dtos.BookingCompleteDTO, error) {
 	for index, booking := range bookings {
 		if booking.BookingId == id{
 			deletedBooking := booking
@@ -88,7 +88,7 @@ func (repo * BookingsRepository) DeleteBooking(id int) (*dtos.BookingCompleteDTO
 	return nil, errors.New("no booking to delete")
 }
 
-func (repo *BookingsRepository) DeleteBookingsFromClass(classId int, dateStart time.Time, dateEnd time.Time) *[]dtos.BookingCompleteDTO{
+func (repo *BookingsRepositoryImpl) DeleteBookingsFromClass(classId int, dateStart time.Time, dateEnd time.Time) *[]dtos.BookingCompleteDTO{
 	bookingsFromClass := repo.GetBookingsFromClass(classId ,time.Time{})
 	var deletedBookings []dtos.BookingCompleteDTO
 

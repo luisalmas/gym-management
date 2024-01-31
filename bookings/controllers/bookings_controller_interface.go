@@ -2,7 +2,7 @@ package controllers
 
 import "github.com/gin-gonic/gin"
 
-type BookingsControllerInterface interface {
+type BookingsController interface {
 	getBookings(c *gin.Context)
 	getBooking(c *gin.Context)
 	postBooking(c *gin.Context)

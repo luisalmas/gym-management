@@ -9,17 +9,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type BookingsController struct {
-	BookingsService services.BookingsServiceInterface
+type BookingsControllerImpl struct {
+	BookingsService services.BookingsService
 }
 
-func NewBookingsController() *BookingsController {
-	return &BookingsController{
+func NewBookingsController() *BookingsControllerImpl {
+	return &BookingsControllerImpl{
 		BookingsService: services.NewBookingsService(),
 	}
 }
 
-func (ctrl *BookingsController) SetupRoutes(router *gin.RouterGroup){
+func (ctrl *BookingsControllerImpl) SetupRoutes(router *gin.RouterGroup){
 	router.GET("/bookings", ctrl.getBookings)
 	router.GET("/bookings/:id", ctrl.getBooking)
 	router.POST("/bookings", ctrl.postBooking)
@@ -34,7 +34,7 @@ func (ctrl *BookingsController) SetupRoutes(router *gin.RouterGroup){
 // @Produce      json
 // @Success      200  {array}  dtos.BookingCompleteDTO
 // @Router       /bookings [get]
-func (ctrl *BookingsController) getBookings(c *gin.Context){
+func (ctrl *BookingsControllerImpl) getBookings(c *gin.Context){
 	c.IndentedJSON(http.StatusOK, ctrl.BookingsService.GetBookings())
 }
 
@@ -47,7 +47,7 @@ func (ctrl *BookingsController) getBookings(c *gin.Context){
 // @Success      200  {object}  dtos.BookingCompleteDTO
 // @Failure      404
 // @Router       /bookings/{id} [get]
-func (ctrl *BookingsController) getBooking(c *gin.Context){
+func (ctrl *BookingsControllerImpl) getBooking(c *gin.Context){
 	id, idError := strconv.Atoi(c.Param("id"))
 	if idError != nil {
 		c.IndentedJSON(http.StatusBadRequest, idError.Error())
@@ -73,7 +73,7 @@ func (ctrl *BookingsController) getBooking(c *gin.Context){
 // @Success      201 {object} dtos.BookingCompleteDTO
 // @Failure      400 
 // @Router       /bookings [post]
-func (ctrl *BookingsController) postBooking(c *gin.Context) {
+func (ctrl *BookingsControllerImpl) postBooking(c *gin.Context) {
 	var booking dtos.BookingDTO
 
 	if err := c.BindJSON(&booking); err != nil {
@@ -102,7 +102,7 @@ func (ctrl *BookingsController) postBooking(c *gin.Context) {
 // @Failure      400 
 // @Failure      404 
 // @Router       /bookings/{id} [put]
-func (ctrl *BookingsController) putBooking(c *gin.Context) {
+func (ctrl *BookingsControllerImpl) putBooking(c *gin.Context) {
 	var booking dtos.BookingDTO
 
 	if err := c.BindJSON(&booking); err != nil {
@@ -141,7 +141,7 @@ func (ctrl *BookingsController) putBooking(c *gin.Context) {
 // @Failure      400 
 // @Failure      404 
 // @Router       /bookings/{id} [delete]
-func (ctrl *BookingsController) deleteBooking(c *gin.Context) {
+func (ctrl *BookingsControllerImpl) deleteBooking(c *gin.Context) {
 	id, idError := strconv.Atoi(c.Param("id"))
 	if idError != nil {
 		c.IndentedJSON(http.StatusBadRequest, idError.Error())
