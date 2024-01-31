@@ -4,7 +4,6 @@ Test implementation of a service in Go of a gym management
 
 #### Todo
 
-    - Delete schedules deletes bookings
     - Update schedules deletes bookings
     - Tests
     - Error types
