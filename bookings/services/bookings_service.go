@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"gym-management/bookings/models/dtos"
 	"gym-management/bookings/models/entities"
 	"gym-management/bookings/repositories"
@@ -29,10 +30,9 @@ func (service *BookingsService) GetBooking(id int) (*dtos.BookingCompleteDTO, er
 }
 
 func (service *BookingsService) InsertNewBooking(newBooking *dtos.BookingDTO) (*dtos.BookingCompleteDTO, error){
-	_, errGetClass := service.ClassesRepository.GetClassSchedule(newBooking.ClassId)
 
-	if errGetClass != nil {
-		return nil, errGetClass
+	if err := service.validateBooking(newBooking); err != nil {
+		return nil, err
 	}
 
 	return service.BookingsRepository.InsertNewBooking(&entities.Booking{Name: newBooking.Name, Date: newBooking.Date, ClassId: newBooking.ClassId})
@@ -45,14 +45,16 @@ func (service *BookingsService) UpdateBooking(id int, updatedBooking *dtos.Booki
 		return nil, errGet, nil
 	}
 
+	if err := service.validateBooking(updatedBooking); err != nil {
+		return nil, nil, err
+	}
+
 	bookingEntity := &entities.Booking{
 		BookingId: currentBooking.BookingId,
 		Name: updatedBooking.Name,
 		Date: updatedBooking.Date,
+		ClassId: updatedBooking.ClassId,
 	}
-
-	//Perform booking validations...
-	//....
 
 	return service.BookingsRepository.UpdateBooking(id, bookingEntity), nil, nil
 }
@@ -71,4 +73,17 @@ func (service *BookingsService) DeleteBooking(id int) (*dtos.BookingCompleteDTO,
 	}
 
 	return deletedBooking, nil, nil
+}
+
+func (service *BookingsService) validateBooking(newBooking *dtos.BookingDTO) error {
+	class, errGetClass := service.ClassesRepository.GetClassSchedule(newBooking.ClassId)
+
+	if errGetClass != nil {
+		return errGetClass
+	}
+
+	if newBooking.Date.Compare(class.StartDate) == -1  || newBooking.Date.Compare(class.EndDate) == 1 {
+		return errors.New("booking date does not correspond to the specified class")
+	}
+	return nil
 }
