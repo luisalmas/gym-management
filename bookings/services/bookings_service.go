@@ -35,7 +35,11 @@ func (service *BookingsServiceImpl) InsertNewBooking(newBooking *dtos.BookingDTO
 		return nil, err
 	}
 
-	return service.BookingsRepository.InsertNewBooking(&entities.Booking{Name: newBooking.Name, Date: newBooking.Date, ClassId: newBooking.ClassId})
+	return service.BookingsRepository.InsertNewBooking(&entities.Booking{
+		Name: newBooking.Name,
+		Date: newBooking.Date,
+		ClassId: newBooking.ClassId,
+		}), nil
 }
 
 func (service *BookingsServiceImpl) UpdateBooking(id int, updatedBooking *dtos.BookingDTO) (*dtos.BookingCompleteDTO, error, error){
