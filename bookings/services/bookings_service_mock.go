@@ -89,7 +89,7 @@ func (mockBookingsService *MockBookingsService) DeleteBooking(id int) (*dtos.Boo
 	}
 
 	if args.Get(2) != nil {
-		return nil, nil, args.Get(1).(error)
+		return nil, nil, args.Get(2).(error)
 	}
 	
 	return nil, nil, nil

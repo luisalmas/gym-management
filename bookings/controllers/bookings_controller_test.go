@@ -216,4 +216,62 @@ func TestPutBookings(t *testing.T){
 	require.Equal(t, http.StatusBadRequest, resp.Code)
 }
 
-//TODO delete
+func TestDeleteBookings(t *testing.T){
+	controller, router := setupController()
+
+	response := testHttpRequest("DELETE", "/api/bookings/asd", nil, router)
+
+	require.Equal(t, http.StatusBadRequest, response.Code)
+
+	setBookingsMock(
+		controller,
+		"DeleteBooking",
+		[]any{mock.AnythingOfType("int")},
+		[]any{insertedbooking, nil, nil},
+	)
+
+	response = testHttpRequest("DELETE", "/api/bookings/1", nil, router)
+
+	var responseData dtos.BookingCompleteDTO
+	err := json.Unmarshal(response.Body.Bytes(), &responseData)
+
+	require.Nil(t, err)
+	require.Equal(t, http.StatusOK, response.Code)
+	require.Equal(t, *insertedbooking, responseData)
+
+	setBookingsMock(
+		controller,
+		"DeleteBooking",
+		[]any{mock.AnythingOfType("int")},
+		[]any{nil, errors.New("error"), nil},
+	)
+
+	response = testHttpRequest("DELETE", "/api/bookings/1", nil, router)
+
+	require.Equal(t, http.StatusNotFound, response.Code)
+
+	setBookingsMock(
+		controller,
+		"DeleteBooking",
+		[]any{mock.AnythingOfType("int")},
+		[]any{nil, nil, errors.New("error")},
+	)
+
+	response = testHttpRequest("DELETE", "/api/bookings/1", nil, router)
+
+	require.Equal(t, http.StatusBadRequest, response.Code)
+}
+
+func testHttpRequest(verb string, uri string, body any, router *gin.Engine) (*httptest.ResponseRecorder) {
+	request, _ := http.NewRequest(verb, uri, nil)
+	response := httptest.NewRecorder()
+	router.ServeHTTP(response, request)
+
+	return response
+}
+
+func setBookingsMock(controller *BookingsControllerImpl, functionName string, args []any, returns []any){
+	bookingsMock := new(services.MockBookingsService)
+	bookingsMock.On(functionName, args...).Return(returns...)
+	controller.BookingsService = bookingsMock
+}
