@@ -5,4 +5,4 @@ Test implementation of a service in Go of a gym management
 #### Todo
 
     - Tests
-    - Error types
+    - Explain everything in readme (how to clone, commands to run, comands to run tests, explain all endpoints)
