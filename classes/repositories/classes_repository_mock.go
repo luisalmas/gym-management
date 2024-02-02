@@ -21,7 +21,19 @@ func (mockClassesRepo *MockClassesRepository) InsertNewClassSchedule(classSchedu
 }
 func (mockClassesRepo *MockClassesRepository) GetClassSchedule(id int) (*entities.Class, error) {
 	args := mockClassesRepo.Called(id)
-	return args.Get(0).(*entities.Class), args.Get(1).(error)
+	if args.Get(0) != nil && args.Get(1) != nil {
+		return args.Get(0).(*entities.Class), args.Get(1).(error)
+	}
+
+	if args.Get(1) == nil{
+		return args.Get(0).(*entities.Class), nil
+	}
+
+	if args.Get(0) == nil{
+		return nil, args.Get(1).(error)
+	}
+
+	return nil, nil
 }
 func (mockClassesRepo *MockClassesRepository) UpdateClassSchedule(id int, updatedClass *entities.Class) *dtos.ClassCompleteDTO {
 	args := mockClassesRepo.Called(id, updatedClass)
