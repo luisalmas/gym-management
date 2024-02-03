@@ -8,7 +8,6 @@ import (
 )
 
 type BookingsRepositoryImpl struct {
-	//db connection
 	bookings []entities.Booking
 }
 
