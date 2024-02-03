@@ -7,7 +7,7 @@ import (
 
 type ClassesRepository interface {
 	GetClassesSchedules() *[]dtos.ClassCompleteDTO
-	InsertNewClassSchedule(classSchedule *entities.Class) (*dtos.ClassCompleteDTO, error)
+	InsertNewClassSchedule(classSchedule *entities.Class) (*dtos.ClassCompleteDTO)
 	GetClassSchedule(id int) (*entities.Class, error)
 	UpdateClassSchedule(id int, updatedClass *entities.Class) *dtos.ClassCompleteDTO
 	DeleteClassSchedule(id int) (*dtos.ClassCompleteDTO, error)

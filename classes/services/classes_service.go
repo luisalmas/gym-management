@@ -33,7 +33,7 @@ func (service *ClassesServiceImpl) InsertNewClassSchedule(classSchedule *dtos.Cl
 		return nil, err
 	}
 
-	return service.ClassesRepository.InsertNewClassSchedule(classScheduleEntity)
+	return service.ClassesRepository.InsertNewClassSchedule(classScheduleEntity), nil
 }
 
 func (service *ClassesServiceImpl) GetClassSchedule(id int) (*dtos.ClassCompleteDTO, error) {

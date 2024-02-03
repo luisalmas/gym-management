@@ -2,9 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
-	"errors"
 	"gym-management/bookings/models/dtos"
+	"gym-management/bookings/models/errors"
 	"gym-management/bookings/services"
+	classesErrors "gym-management/classes/models/errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -96,7 +97,7 @@ func TestBookingsController(t *testing.T) {
 	})
 
 	t.Run("GetBookingNotFound", func(t *testing.T){
-		bookingsMock.On("GetBooking", mock.Anything).Return(nil, errors.New("error")).Once()
+		bookingsMock.On("GetBooking", mock.Anything).Return(nil, errors.NewBookingNotFoundError()).Once()
 
 		request, _ := http.NewRequest("GET","/api/bookings/1",nil)
 		response := httptest.NewRecorder()
@@ -136,7 +137,7 @@ func TestBookingsController(t *testing.T) {
 	})
 
 	t.Run("PostBookingWithError", func(t *testing.T){
-		bookingsMock.On("InsertNewBooking", bookingToInsert).Return(nil, errors.New("error")).Once()
+		bookingsMock.On("InsertNewBooking", bookingToInsert).Return(nil, errors.NewBookingDateInvalid()).Once()
 
 		jsonData, errorJson := json.Marshal(bookingToInsert)
 
@@ -147,6 +148,20 @@ func TestBookingsController(t *testing.T) {
 		router.ServeHTTP(response, request)
 
 		assert.Equal(t, http.StatusBadRequest, response.Code)
+	})
+
+	t.Run("PostBookingClassNotFound", func(t *testing.T) {
+		bookingsMock.On("InsertNewBooking", bookingToInsert).Return(nil, classesErrors.NewClassNotFoundError()).Once()
+
+		jsonData, errorJson := json.Marshal(bookingToInsert)
+
+		assert.Nil(t, errorJson)
+
+		request, _ := http.NewRequest("POST", "/api/bookings", strings.NewReader(string(jsonData)))
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
+
+		assert.Equal(t, http.StatusNotFound, response.Code)
 	})
 
 	//===================== PutBookings tests ==============================================
@@ -190,7 +205,7 @@ func TestBookingsController(t *testing.T) {
 	})
 
 	t.Run("PutBookingNotFound", func(t *testing.T){
-		bookingsMock.On("UpdateBooking", mock.Anything, bookingToInsert).Return(nil, errors.New("error"), nil).Once()
+		bookingsMock.On("UpdateBooking", mock.Anything, bookingToInsert).Return(nil, errors.NewBookingNotFoundError()).Once()
 
 		jsonData, errorJson := json.Marshal(*bookingToInsert)
 		assert.Nil(t, errorJson)
@@ -203,7 +218,7 @@ func TestBookingsController(t *testing.T) {
 	})
 
 	t.Run("PutBookingError", func(t *testing.T){
-		bookingsMock.On("UpdateBooking", mock.Anything, bookingToInsert).Return(nil, nil, errors.New("error")).Once()
+		bookingsMock.On("UpdateBooking", mock.Anything, bookingToInsert).Return(nil, errors.NewBookingDateInvalid()).Once()
 
 		jsonData, errorJson := json.Marshal(bookingToInsert)
 		assert.Nil(t, errorJson)
@@ -214,6 +229,20 @@ func TestBookingsController(t *testing.T) {
 
 
 		require.Equal(t, http.StatusBadRequest, response.Code)
+	})
+
+	t.Run("PutBookingClassNotFound", func(t *testing.T) {
+		bookingsMock.On("UpdateBooking", mock.Anything, bookingToInsert).Return(nil, classesErrors.NewClassNotFoundError()).Once()
+
+		jsonData, errorJson := json.Marshal(bookingToInsert)
+		assert.Nil(t, errorJson)
+
+		request, _ := http.NewRequest("PUT", "/api/bookings/4", strings.NewReader(string(jsonData)))
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
+
+
+		require.Equal(t, http.StatusNotFound, response.Code)
 	})
 
 	//===================== DeleteBookings tests ==============================================
@@ -243,7 +272,7 @@ func TestBookingsController(t *testing.T) {
 	})
 
 	t.Run("DeleteBookingNotFound", func(t *testing.T){
-		bookingsMock.On("DeleteBooking", mock.Anything).Return(nil, errors.New("error"), nil).Once()
+		bookingsMock.On("DeleteBooking", mock.Anything).Return(nil, errors.NewBookingNotFoundError()).Once()
 
 		request, _ := http.NewRequest("DELETE", "/api/bookings/1", nil)
 		response := httptest.NewRecorder()
@@ -253,13 +282,13 @@ func TestBookingsController(t *testing.T) {
 	})
 
 	t.Run("DeleteBookingError", func(t *testing.T){
-		bookingsMock.On("DeleteBooking", mock.Anything).Return(nil, nil, errors.New("error")).Once()
+		bookingsMock.On("DeleteBooking", mock.Anything).Return(nil, errors.NewBookingNotFoundError()).Once()
 
 		request, _ := http.NewRequest("DELETE", "/api/bookings/1", nil)
 		response := httptest.NewRecorder()
 		router.ServeHTTP(response, request)
 
-		assert.Equal(t, http.StatusBadRequest, response.Code)
+		assert.Equal(t, http.StatusNotFound, response.Code)
 	})
 
 	bookingsMock.AssertExpectations(t)

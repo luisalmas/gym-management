@@ -1,9 +1,9 @@
 package repositories
 
 import (
-	"errors"
 	"gym-management/bookings/models/dtos"
 	"gym-management/bookings/models/entities"
+	"gym-management/bookings/models/errors"
 	"time"
 )
 
@@ -59,7 +59,7 @@ func (repo *BookingsRepositoryImpl) GetBooking(id int) (*entities.Booking, error
 			return &repo.bookings[index], nil
 		}
 	}
-	return nil, errors.New("booking not found")
+	return nil, errors.NewBookingNotFoundError()
 }
 
 func (repo * BookingsRepositoryImpl) InsertNewBooking(newBooking *entities.Booking) *dtos.BookingCompleteDTO {
@@ -86,7 +86,7 @@ func (repo * BookingsRepositoryImpl) DeleteBooking(id int) (*dtos.BookingComplet
 			return deletedBooking.ToBookingDTO(), nil
 		}
 	}
-	return nil, errors.New("no booking to delete")
+	return nil, errors.NewBookingNotFoundError()
 }
 
 func (repo *BookingsRepositoryImpl) DeleteBookingsFromClass(classId int, dateStart time.Time, dateEnd time.Time) *[]dtos.BookingCompleteDTO{

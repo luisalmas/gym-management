@@ -3,6 +3,7 @@ package controllers
 import (
 	"gym-management/bookings/models/dtos"
 	"gym-management/bookings/services"
+	"gym-management/utils"
 	"net/http"
 	"strconv"
 
@@ -57,7 +58,7 @@ func (ctrl *BookingsControllerImpl) getBooking(c *gin.Context){
 	booking, err := ctrl.BookingsService.GetBooking(id)
 	
 	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, err.Error())
+		utils.ErrorHandler(c, err)
 		return
 	}
 
@@ -84,7 +85,7 @@ func (ctrl *BookingsControllerImpl) postBooking(c *gin.Context) {
 	insertedBooking, err := ctrl.BookingsService.InsertNewBooking(&booking)
 
 	if err != nil{
-		c.IndentedJSON(http.StatusBadRequest, err.Error())
+		utils.ErrorHandler(c, err)
 		return
 	}
 
@@ -116,15 +117,10 @@ func (ctrl *BookingsControllerImpl) putBooking(c *gin.Context) {
 		return
 	}
 
-	updatedBooking, unfoundError, updateError := ctrl.BookingsService.UpdateBooking(id, &booking)
+	updatedBooking, err := ctrl.BookingsService.UpdateBooking(id, &booking)
 
-	if unfoundError != nil{
-		c.IndentedJSON(http.StatusNotFound, unfoundError.Error())
-		return
-	}
-
-	if updateError != nil{
-		c.IndentedJSON(http.StatusBadRequest, updateError.Error())
+	if err != nil {
+		utils.ErrorHandler(c, err)
 		return
 	}
 
@@ -148,15 +144,10 @@ func (ctrl *BookingsControllerImpl) deleteBooking(c *gin.Context) {
 		return
 	}
 
-	deletedBooking, unfoundError, removeError := ctrl.BookingsService.DeleteBooking(id)
+	deletedBooking, err := ctrl.BookingsService.DeleteBooking(id)
 
-	if unfoundError != nil{
-		c.IndentedJSON(http.StatusNotFound, unfoundError.Error())
-		return
-	}
-
-	if removeError != nil{
-		c.IndentedJSON(http.StatusBadRequest, removeError.Error())
+	if err != nil{
+		utils.ErrorHandler(c, err)
 		return
 	}
 

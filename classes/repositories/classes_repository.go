@@ -1,9 +1,9 @@
 package repositories
 
 import (
-	"errors"
 	"gym-management/classes/models/dtos"
 	"gym-management/classes/models/entities"
+	"gym-management/classes/models/errors"
 	"time"
 )
 
@@ -39,10 +39,10 @@ func (repo *ClassesRepositoryImpl) GetClassesSchedules() *[]dtos.ClassCompleteDT
 	return &classesDTO
 }
 
-func (repo *ClassesRepositoryImpl) InsertNewClassSchedule(classSchedule *entities.Class) (*dtos.ClassCompleteDTO, error){
+func (repo *ClassesRepositoryImpl) InsertNewClassSchedule(classSchedule *entities.Class) *dtos.ClassCompleteDTO{
 	classSchedule.ClassId = len(classes) + 1
 	classes = append(classes, *classSchedule)
-	return (classSchedule.ToClassSheduleDTO()), nil
+	return (classSchedule.ToClassSheduleDTO())
 }
 
 func (repo *ClassesRepositoryImpl) GetClassSchedule(id int) (*entities.Class, error){
@@ -51,7 +51,7 @@ func (repo *ClassesRepositoryImpl) GetClassSchedule(id int) (*entities.Class, er
 			return &classes[index], nil
 		}
 	}
-	return nil, errors.New("class not found")
+	return nil, errors.NewClassNotFoundError()
 }
 
 func (repo *ClassesRepositoryImpl) UpdateClassSchedule(id int, updatedClass *entities.Class) (*dtos.ClassCompleteDTO){
@@ -74,5 +74,5 @@ func (repo *ClassesRepositoryImpl) DeleteClassSchedule(id int) (*dtos.ClassCompl
 			return deletedClass.ToClassSheduleDTO(), nil
 		}
 	}
-	return nil, errors.New("no booking to delete")
+	return nil, errors.NewClassNotFoundError()
 }

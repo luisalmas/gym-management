@@ -1,9 +1,9 @@
 package services
 
 import (
-	"errors"
 	"gym-management/bookings/models/dtos"
 	"gym-management/bookings/models/entities"
+	"gym-management/bookings/models/errors"
 	"gym-management/bookings/repositories"
 	classesRepo "gym-management/classes/repositories"
 )
@@ -47,15 +47,15 @@ func (service *BookingsServiceImpl) InsertNewBooking(newBooking *dtos.BookingDTO
 		}), nil
 }
 
-func (service *BookingsServiceImpl) UpdateBooking(id int, updatedBooking *dtos.BookingDTO) (*dtos.BookingCompleteDTO, error, error){
+func (service *BookingsServiceImpl) UpdateBooking(id int, updatedBooking *dtos.BookingDTO) (*dtos.BookingCompleteDTO, error){
 	currentBooking, errGet := service.BookingsRepository.GetBooking(id)
 	
 	if errGet != nil {
-		return nil, errGet, nil
+		return nil, errGet
 	}
 
 	if err := service.validateBooking(updatedBooking); err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	bookingEntity := &entities.Booking{
@@ -65,23 +65,23 @@ func (service *BookingsServiceImpl) UpdateBooking(id int, updatedBooking *dtos.B
 		ClassId: updatedBooking.ClassId,
 	}
 
-	return service.BookingsRepository.UpdateBooking(id, bookingEntity), nil, nil
+	return service.BookingsRepository.UpdateBooking(id, bookingEntity), nil
 }
 
-func (service *BookingsServiceImpl) DeleteBooking(id int) (*dtos.BookingCompleteDTO, error, error){
+func (service *BookingsServiceImpl) DeleteBooking(id int) (*dtos.BookingCompleteDTO, error){
 	currentBooking, errGet := service.BookingsRepository.GetBooking(id)
 	
 	if errGet != nil {
-		return nil, errGet, nil
+		return nil, errGet
 	}
 
 	deletedBooking, errDelete := service.BookingsRepository.DeleteBooking(currentBooking.BookingId)
 
 	if errDelete != nil {
-		return nil, nil, errDelete
+		return nil, errDelete
 	}
 
-	return deletedBooking, nil, nil
+	return deletedBooking, nil
 }
 
 func (service *BookingsServiceImpl) validateBooking(newBooking *dtos.BookingDTO) error {
@@ -92,7 +92,7 @@ func (service *BookingsServiceImpl) validateBooking(newBooking *dtos.BookingDTO)
 	}
 
 	if newBooking.Date.Compare(class.StartDate) == -1  || newBooking.Date.Compare(class.EndDate) == 1 {
-		return errors.New("booking date does not correspond to the specified class")
+		return errors.NewBookingDateInvalid()
 	}
 	return nil
 }
