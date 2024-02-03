@@ -8,7 +8,7 @@ Test implementation of a service in Go of a gym management
     - Explain everything in readme (how to clone, commands to run, comands to run tests, explain all endpoints)
     - Simplify dates in inputs
     - Errors when parsing dates
-    - Customize the messeges in required in dtos
+    - Customize the messages in required in dtos
     - Errors in objects to return just one
     - Trim spaces in strings
 

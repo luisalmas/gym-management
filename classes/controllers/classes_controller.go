@@ -3,6 +3,7 @@ package controllers
 import (
 	"gym-management/classes/models/dtos"
 	"gym-management/classes/services"
+	"gym-management/utils"
 	"net/http"
 	"strconv"
 	"time"
@@ -118,15 +119,10 @@ func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 		return
 	}
 
-	updatedClass, unfoundError, updateError := ctrl.ClassesService.UpdateClass(id, &classSchedule)
-
-	if unfoundError != nil{
-		c.IndentedJSON(http.StatusNotFound, unfoundError.Error())
-		return
-	}
+	updatedClass, updateError := ctrl.ClassesService.UpdateClass(id, &classSchedule)
 
 	if updateError != nil{
-		c.IndentedJSON(http.StatusBadRequest, updateError.Error())
+		utils.ErrorHandler(c, updateError)
 		return
 	}
 
@@ -150,15 +146,10 @@ func (ctrl *ClassesController) deleteClassSchedule(c *gin.Context) {
 		return
 	}
 
-	deletedClass, unfoundError, deleteError := ctrl.ClassesService.DeleteClass(id)
-
-	if unfoundError != nil{
-		c.IndentedJSON(http.StatusNotFound, unfoundError.Error())
-		return
-	}
+	deletedClass, deleteError := ctrl.ClassesService.DeleteClass(id)
 
 	if deleteError != nil{
-		c.IndentedJSON(http.StatusBadRequest, deleteError.Error())
+		utils.ErrorHandler(c, deleteError)
 		return
 	}
 
