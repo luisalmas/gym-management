@@ -33,6 +33,52 @@ func TestBookingsRepository(t *testing.T) {
 			ClassId: 1,
 		}
 
+	type DeleteBookingsFromClassTestParams struct {
+			ClassId int
+			DateBegin time.Time
+			DateEnd time.Time
+			ExpectedResult any
+		}
+	
+	deleteBookingsFromClassTests := []DeleteBookingsFromClassTestParams{
+			{
+				ClassId: 1,
+				DateBegin: time.Time{},
+				DateEnd: time.Time{},
+				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(),*secondbooking.ToBookingDTO()},
+			},
+			{
+				ClassId: 1,
+				DateBegin: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
+				DateEnd: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
+				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO()},
+			},
+			{
+				ClassId: 1,
+				DateBegin: time.Now(),
+				DateEnd: time.Time{},
+				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(), *secondbooking.ToBookingDTO()},
+			},
+			{
+				ClassId: 1,
+				DateBegin: time.Time{},
+				DateEnd: time.Now(),
+				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(), *secondbooking.ToBookingDTO()},
+			},
+			{
+				ClassId: 0,
+				DateBegin: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
+				DateEnd: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
+				ExpectedResult: []dtos.BookingCompleteDTO {},
+			},
+			{
+				ClassId: 1,
+				DateBegin: time.Date(2024, time.February, 01,  0, 0, 0, 0, time.UTC),
+				DateEnd: time.Date(2024, time.February, 26,  0, 0, 0, 0, time.UTC),
+				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(), *secondbooking.ToBookingDTO()},
+			},
+		}
+
 	//===================== GetBookings tests ==============================================
 
 	t.Run("GetBookings", func(t *testing.T) {
@@ -100,6 +146,11 @@ func TestBookingsRepository(t *testing.T) {
 		insertedBooking := bookingsRepository.InsertNewBooking(bookingToInsert)
 
 		assert.Equal(t, bookingToInsert.ToBookingDTO(), insertedBooking)
+
+		booking, err := bookingsRepository.GetBooking(3)
+
+		assert.Nil(t, err)
+		assert.Equal(t, bookingToInsert, booking)
 	})
 
 	//===================== UpdateBooking tests ==============================================
@@ -124,6 +175,11 @@ func TestBookingsRepository(t *testing.T) {
 
 		assert.Nil(t, err)
 		assert.Equal(t, firstbooking.ToBookingDTO(), deletedBooking)
+
+		booking, err := bookingsRepository.GetBooking(1)
+
+		assert.NotNil(t, err)
+		assert.Nil(t, booking)
 	})
 
 	t.Run("DeleteBookingNotFound", func(t *testing.T){
@@ -135,52 +191,6 @@ func TestBookingsRepository(t *testing.T) {
 	})
 
 	//===================== DeleteBookingsFromClass tests ==============================================
-
-	type DeleteBookingsFromClassTestParams struct {
-		ClassId int
-		DateBegin time.Time
-		DateEnd time.Time
-		ExpectedResult any
-	}
-
-	deleteBookingsFromClassTests := []DeleteBookingsFromClassTestParams{
-		{
-			ClassId: 1,
-			DateBegin: time.Time{},
-			DateEnd: time.Time{},
-			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(),*secondbooking.ToBookingDTO()},
-		},
-		{
-			ClassId: 1,
-			DateBegin: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
-			DateEnd: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
-			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO()},
-		},
-		{
-			ClassId: 1,
-			DateBegin: time.Now(),
-			DateEnd: time.Time{},
-			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(), *secondbooking.ToBookingDTO()},
-		},
-		{
-			ClassId: 1,
-			DateBegin: time.Time{},
-			DateEnd: time.Now(),
-			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(), *secondbooking.ToBookingDTO()},
-		},
-		{
-			ClassId: 0,
-			DateBegin: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
-			DateEnd: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
-			ExpectedResult: []dtos.BookingCompleteDTO {},
-		},
-		{
-			ClassId: 1,
-			DateBegin: time.Date(2024, time.February, 01,  0, 0, 0, 0, time.UTC),
-			DateEnd: time.Date(2024, time.February, 26,  0, 0, 0, 0, time.UTC),
-			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(), *secondbooking.ToBookingDTO()},
-		},
-	}
 
 	for index, test := range deleteBookingsFromClassTests {
 		t.Run("DeleteBookingsFromClass_" + strconv.Itoa(index), func(t *testing.T) {
