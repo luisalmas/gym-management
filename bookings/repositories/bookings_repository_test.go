@@ -45,25 +45,25 @@ func TestBookingsRepository(t *testing.T) {
 				ClassId: 1,
 				DateBegin: time.Time{},
 				DateEnd: time.Time{},
-				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(),*secondbooking.ToBookingDTO()},
+				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingCompleteDTO(),*secondbooking.ToBookingCompleteDTO()},
 			},
 			{
 				ClassId: 1,
 				DateBegin: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
 				DateEnd: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
-				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO()},
+				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingCompleteDTO()},
 			},
 			{
 				ClassId: 1,
 				DateBegin: time.Now(),
 				DateEnd: time.Time{},
-				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(), *secondbooking.ToBookingDTO()},
+				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingCompleteDTO(), *secondbooking.ToBookingCompleteDTO()},
 			},
 			{
 				ClassId: 1,
 				DateBegin: time.Time{},
 				DateEnd: time.Now(),
-				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(), *secondbooking.ToBookingDTO()},
+				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingCompleteDTO(), *secondbooking.ToBookingCompleteDTO()},
 			},
 			{
 				ClassId: 0,
@@ -75,7 +75,7 @@ func TestBookingsRepository(t *testing.T) {
 				ClassId: 1,
 				DateBegin: time.Date(2024, time.February, 01,  0, 0, 0, 0, time.UTC),
 				DateEnd: time.Date(2024, time.February, 26,  0, 0, 0, 0, time.UTC),
-				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(), *secondbooking.ToBookingDTO()},
+				ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingCompleteDTO(), *secondbooking.ToBookingCompleteDTO()},
 			},
 		}
 
@@ -86,8 +86,8 @@ func TestBookingsRepository(t *testing.T) {
 		bookings := bookingsRepository.GetBookings()
 
 		assert.Equal(t, []dtos.BookingCompleteDTO {
-			*firstbooking.ToBookingDTO(),
-			*secondbooking.ToBookingDTO(),
+			*firstbooking.ToBookingCompleteDTO(),
+			*secondbooking.ToBookingCompleteDTO(),
 		}, *bookings)
 	})
 
@@ -115,14 +115,14 @@ func TestBookingsRepository(t *testing.T) {
 		bookingsRepository := NewBookingsRepository()
 		bookings := bookingsRepository.GetBookingsFromClass(1, time.Time{})
 
-		assert.Equal(t, []dtos.BookingCompleteDTO{*firstbooking.ToBookingDTO(), *secondbooking.ToBookingDTO()}, *bookings)
+		assert.Equal(t, []dtos.BookingCompleteDTO{*firstbooking.ToBookingCompleteDTO(), *secondbooking.ToBookingCompleteDTO()}, *bookings)
 	})
 
 	t.Run("GetBookingsFromClassWithDate", func(t *testing.T){
 		bookingsRepository := NewBookingsRepository()
 		bookings := bookingsRepository.GetBookingsFromClass(1, time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC))
 
-		assert.Equal(t, []dtos.BookingCompleteDTO{*secondbooking.ToBookingDTO()}, *bookings)
+		assert.Equal(t, []dtos.BookingCompleteDTO{*secondbooking.ToBookingCompleteDTO()}, *bookings)
 	})
 
 	t.Run("GetBookingsFromClassNotFound", func(t *testing.T){
@@ -145,7 +145,7 @@ func TestBookingsRepository(t *testing.T) {
 		bookingsRepository := NewBookingsRepository()
 		insertedBooking := bookingsRepository.InsertNewBooking(bookingToInsert)
 
-		assert.Equal(t, bookingToInsert.ToBookingDTO(), insertedBooking)
+		assert.Equal(t, bookingToInsert.ToBookingCompleteDTO(), insertedBooking)
 
 		booking, err := bookingsRepository.GetBooking(3)
 
@@ -174,7 +174,7 @@ func TestBookingsRepository(t *testing.T) {
 		deletedBooking, err := bookingsRepository.DeleteBooking(1)
 
 		assert.Nil(t, err)
-		assert.Equal(t, firstbooking.ToBookingDTO(), deletedBooking)
+		assert.Equal(t, firstbooking.ToBookingCompleteDTO(), deletedBooking)
 
 		booking, err := bookingsRepository.GetBooking(1)
 
@@ -207,8 +207,8 @@ func TestBookingsRepository(t *testing.T) {
 // 	bookings := bookingsRepository.GetBookings()
 
 // 	assert.Equal(t, []dtos.BookingCompleteDTO {
-// 		*firstbooking.ToBookingDTO(),
-// 		*secondbooking.ToBookingDTO(),
+// 		*firstbooking.ToBookingCompleteDTO(),
+// 		*secondbooking.ToBookingCompleteDTO(),
 // 	}, *bookings)
 // }
 
@@ -230,13 +230,13 @@ func TestBookingsRepository(t *testing.T) {
 
 // 	bookingsFromClass := bookingsRepository.GetBookingsFromClass(1 ,time.Time{})
 // 	require.Equal(t, *bookingsFromClass, []dtos.BookingCompleteDTO {
-// 		*firstbooking.ToBookingDTO(),
-// 		*secondbooking.ToBookingDTO(),
+// 		*firstbooking.ToBookingCompleteDTO(),
+// 		*secondbooking.ToBookingCompleteDTO(),
 // 	})
 
 // 	bookingsFromClassWithDate := bookingsRepository.GetBookingsFromClass(1 ,time.Date(2024, time.January, 25,  0, 0, 0, 0, time.UTC))
 // 	require.Equal(t, []dtos.BookingCompleteDTO {
-// 		*firstbooking.ToBookingDTO(),
+// 		*firstbooking.ToBookingCompleteDTO(),
 // 	}, *bookingsFromClassWithDate)
 
 // 	testNoClass := bookingsRepository.GetBookingsFromClass(0, time.Time{})
@@ -261,7 +261,7 @@ func TestBookingsRepository(t *testing.T) {
 
 // 	insertedBooking := bookingsRepository.InsertNewBooking(&bookingToInsert)
 
-// 	require.Equal(t, bookingToInsert.ToBookingDTO(), insertedBooking)
+// 	require.Equal(t, bookingToInsert.ToBookingCompleteDTO(), insertedBooking)
 // }
 
 // func TestUpdateBooking(t *testing.T) {
@@ -276,7 +276,7 @@ func TestBookingsRepository(t *testing.T) {
 
 // 	updatedBooking := bookingsRepository.UpdateBooking(bookingToUpdate.BookingId, &bookingToUpdate)
 
-// 	require.Equal(t, bookingToUpdate.ToBookingDTO(), updatedBooking)
+// 	require.Equal(t, bookingToUpdate.ToBookingCompleteDTO(), updatedBooking)
 // }
 
 // func TestDeleteBooking(t *testing.T) {
@@ -284,7 +284,7 @@ func TestBookingsRepository(t *testing.T) {
 
 // 	deletedBooking, err := bookingsRepository.DeleteBooking(firstbooking.BookingId)
 // 	require.Nil(t, err)
-// 	require.Equal(t, firstbooking.ToBookingDTO(), deletedBooking)
+// 	require.Equal(t, firstbooking.ToBookingCompleteDTO(), deletedBooking)
 
 // 	deleteBookingFail, errFail := bookingsRepository.DeleteBooking(0)
 // 	require.NotNil(t, errFail)
@@ -305,25 +305,25 @@ func TestBookingsRepository(t *testing.T) {
 // 			ClassId: 1,
 // 			DateBegin: time.Time{},
 // 			DateEnd: time.Time{},
-// 			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(),*secondbooking.ToBookingDTO()},
+// 			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingCompleteDTO(),*secondbooking.ToBookingCompleteDTO()},
 // 		},
 // 		{
 // 			ClassId: 1,
 // 			DateBegin: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
 // 			DateEnd: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
-// 			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO()},
+// 			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingCompleteDTO()},
 // 		},
 // 		{
 // 			ClassId: 1,
 // 			DateBegin: time.Now(),
 // 			DateEnd: time.Time{},
-// 			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(), *secondbooking.ToBookingDTO()},
+// 			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingCompleteDTO(), *secondbooking.ToBookingCompleteDTO()},
 // 		},
 // 		{
 // 			ClassId: 1,
 // 			DateBegin: time.Time{},
 // 			DateEnd: time.Now(),
-// 			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(), *secondbooking.ToBookingDTO()},
+// 			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingCompleteDTO(), *secondbooking.ToBookingCompleteDTO()},
 // 		},
 // 		{
 // 			ClassId: 0,
@@ -335,7 +335,7 @@ func TestBookingsRepository(t *testing.T) {
 // 			ClassId: 1,
 // 			DateBegin: time.Date(2024, time.February, 01,  0, 0, 0, 0, time.UTC),
 // 			DateEnd: time.Date(2024, time.February, 26,  0, 0, 0, 0, time.UTC),
-// 			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingDTO(), *secondbooking.ToBookingDTO()},
+// 			ExpectedResult: []dtos.BookingCompleteDTO {*firstbooking.ToBookingCompleteDTO(), *secondbooking.ToBookingCompleteDTO()},
 // 		},
 // 	}
 

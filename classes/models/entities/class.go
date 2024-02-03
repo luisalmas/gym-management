@@ -33,7 +33,7 @@ func (class *Class) New(classDTO *dtos.ClassDTO) (*Class, error) {
 	}, nil
 }
 
-func (class *Class) ToClassSheduleDTO() (*dtos.ClassCompleteDTO) {
+func (class *Class) ToClassCompleteDTO() (*dtos.ClassCompleteDTO) {
 	return &dtos.ClassCompleteDTO{
 		ClassId: class.ClassId,
 		Name: class.Name,

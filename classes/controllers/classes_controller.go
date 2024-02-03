@@ -37,7 +37,7 @@ func (ctrl *ClassesController) SetupRoutes(router *gin.RouterGroup) {
 // @Success      200  {array}  dtos.ClassCompleteDTO
 // @Router       /classes [get]
 func (ctrl *ClassesController) getClassesSchedules(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, ctrl.ClassesService.GetClassesSchedules())
+	c.IndentedJSON(http.StatusOK, ctrl.ClassesService.GetClasses())
 }
 
 // GetClass             godoc
@@ -55,7 +55,7 @@ func (ctrl *ClassesController) getClassSchedule(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, idError.Error())
 		return
 	}
-	class, err := ctrl.ClassesService.GetClassSchedule(id)
+	class, err := ctrl.ClassesService.GetClass(id)
 
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, err.Error())
@@ -82,7 +82,7 @@ func (ctrl *ClassesController) postClassSchedule(c *gin.Context) {
 		return
     }
 	
-	insertedClassSchedule, err := ctrl.ClassesService.InsertNewClassSchedule(&classSchedule)
+	insertedClassSchedule, err := ctrl.ClassesService.InsertNewClass(&classSchedule)
 
 	if err != nil{
 		c.IndentedJSON(http.StatusBadRequest, err.Error())
@@ -118,7 +118,7 @@ func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 		return
 	}
 
-	updatedClass, unfoundError, updateError := ctrl.ClassesService.UpdateClassSchedule(id, &classSchedule)
+	updatedClass, unfoundError, updateError := ctrl.ClassesService.UpdateClass(id, &classSchedule)
 
 	if unfoundError != nil{
 		c.IndentedJSON(http.StatusNotFound, unfoundError.Error())
@@ -150,7 +150,7 @@ func (ctrl *ClassesController) deleteClassSchedule(c *gin.Context) {
 		return
 	}
 
-	deletedClass, unfoundError, deleteError := ctrl.ClassesService.DeleteClassSchedule(id)
+	deletedClass, unfoundError, deleteError := ctrl.ClassesService.DeleteClass(id)
 
 	if unfoundError != nil{
 		c.IndentedJSON(http.StatusNotFound, unfoundError.Error())

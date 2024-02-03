@@ -6,9 +6,9 @@ import (
 )
 
 type ClassesRepository interface {
-	GetClassesSchedules() *[]dtos.ClassCompleteDTO
-	InsertNewClassSchedule(classSchedule *entities.Class) (*dtos.ClassCompleteDTO)
-	GetClassSchedule(id int) (*entities.Class, error)
-	UpdateClassSchedule(id int, updatedClass *entities.Class) *dtos.ClassCompleteDTO
-	DeleteClassSchedule(id int) (*dtos.ClassCompleteDTO, error)
+	GetClasses() *[]dtos.ClassCompleteDTO
+	InsertNewClass(classSchedule *entities.Class) (*dtos.ClassCompleteDTO)
+	GetClass(id int) (*entities.Class, error)
+	UpdateClass(id int, updatedClass *entities.Class) *dtos.ClassCompleteDTO
+	DeleteClass(id int) (*dtos.ClassCompleteDTO, error)
 }

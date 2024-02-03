@@ -12,7 +12,7 @@ type Booking struct {
 	ClassId int
 }
 
-func (booking *Booking) ToBookingDTO() (*dtos.BookingCompleteDTO) {
+func (booking *Booking) ToBookingCompleteDTO() (*dtos.BookingCompleteDTO) {
 	return &dtos.BookingCompleteDTO{
 		BookingId: booking.BookingId,
 		Name: booking.Name,

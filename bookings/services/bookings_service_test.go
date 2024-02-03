@@ -69,15 +69,15 @@ func TestBookingsService(t *testing.T) {
 
 	t.Run("GetBookings", func(t *testing.T) {
 		bookRepoMock.On("GetBookings").Return(&[]dtos.BookingCompleteDTO{
-			*firstbooking.ToBookingDTO(),
-			*secondbooking.ToBookingDTO(),
+			*firstbooking.ToBookingCompleteDTO(),
+			*secondbooking.ToBookingCompleteDTO(),
 		}).Once()
 
 		resultWithValues := bookingsService.GetBookings()
 
 		assert.Equal(t, []dtos.BookingCompleteDTO{
-			*firstbooking.ToBookingDTO(),
-			*secondbooking.ToBookingDTO(),
+			*firstbooking.ToBookingCompleteDTO(),
+			*secondbooking.ToBookingCompleteDTO(),
 		}, *resultWithValues)
 	})
 
@@ -89,7 +89,7 @@ func TestBookingsService(t *testing.T) {
 		result, errWithVals := bookingsService.GetBooking(firstbooking.BookingId)
 
 		assert.Nil(t, errWithVals)
-		assert.Equal(t, firstbooking.ToBookingDTO(), result)
+		assert.Equal(t, firstbooking.ToBookingCompleteDTO(), result)
 	})
 
 	t.Run("GetBookingNotFound", func(t *testing.T){
@@ -176,12 +176,12 @@ func TestBookingsService(t *testing.T) {
 	//===================== DeleteBookings tests ==============================================
 
 	t.Run("DeleteBooking", func(t *testing.T){
-		bookRepoMock.On("DeleteBooking", mock.Anything).Return(firstbooking.ToBookingDTO(), nil).Once()
+		bookRepoMock.On("DeleteBooking", mock.Anything).Return(firstbooking.ToBookingCompleteDTO(), nil).Once()
 
 		deletedBooking, err := bookingsService.DeleteBooking(1)
 
 		assert.Nil(t, err)
-		assert.Equal(t, firstbooking.ToBookingDTO(), deletedBooking)
+		assert.Equal(t, firstbooking.ToBookingCompleteDTO(), deletedBooking)
 	})
 
 	t.Run("DeleteBookingNotFound", func(t *testing.T){

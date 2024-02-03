@@ -31,7 +31,7 @@ func (service *BookingsServiceImpl) GetBooking(id int) (*dtos.BookingCompleteDTO
 		return nil, err
 	}
 
-	return bookingEntity.ToBookingDTO(), err
+	return bookingEntity.ToBookingCompleteDTO(), err
 }
 
 func (service *BookingsServiceImpl) InsertNewBooking(newBooking *dtos.BookingDTO) (*dtos.BookingCompleteDTO, error){
@@ -79,7 +79,7 @@ func (service *BookingsServiceImpl) DeleteBooking(id int) (*dtos.BookingComplete
 }
 
 func (service *BookingsServiceImpl) validateBooking(newBooking *dtos.BookingDTO) error {
-	class, errGetClass := service.ClassesRepository.GetClassSchedule(newBooking.ClassId)
+	class, errGetClass := service.ClassesRepository.GetClass(newBooking.ClassId)
 
 	if errGetClass != nil {
 		return errGetClass

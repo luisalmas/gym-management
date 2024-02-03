@@ -33,7 +33,7 @@ func NewBookingsRepository() *BookingsRepositoryImpl{
 func (repo *BookingsRepositoryImpl) GetBookings() *[]dtos.BookingCompleteDTO {
 	bookingsDTO := []dtos.BookingCompleteDTO{}
 	for _, booking := range repo.bookings {
-		bookingsDTO = append(bookingsDTO, *booking.ToBookingDTO())
+		bookingsDTO = append(bookingsDTO, *booking.ToBookingCompleteDTO())
 	}
 	return &bookingsDTO
 }
@@ -43,9 +43,9 @@ func (repo *BookingsRepositoryImpl) GetBookingsFromClass(classId int, date time.
 	for _, booking := range repo.bookings {
 		if booking.ClassId == classId {
 			if date.IsZero() {
-				bookingsDTO = append(bookingsDTO, *booking.ToBookingDTO())
+				bookingsDTO = append(bookingsDTO, *booking.ToBookingCompleteDTO())
 			}else if booking.Date == date{
-				bookingsDTO = append(bookingsDTO, *booking.ToBookingDTO())
+				bookingsDTO = append(bookingsDTO, *booking.ToBookingCompleteDTO())
 			}
 		}
 	}
@@ -64,7 +64,7 @@ func (repo *BookingsRepositoryImpl) GetBooking(id int) (*entities.Booking, error
 func (repo * BookingsRepositoryImpl) InsertNewBooking(newBooking *entities.Booking) *dtos.BookingCompleteDTO {
 	newBooking.BookingId = len(repo.bookings) + 1
 	repo.bookings = append(repo.bookings, *newBooking)
-	return newBooking.ToBookingDTO()
+	return newBooking.ToBookingCompleteDTO()
 }
 
 func (repo * BookingsRepositoryImpl) UpdateBooking(id int, updatedBooking *entities.Booking) (*dtos.BookingCompleteDTO) {
@@ -74,7 +74,7 @@ func (repo * BookingsRepositoryImpl) UpdateBooking(id int, updatedBooking *entit
 	currentBooking.Name = updatedBooking.Name
 	currentBooking.Date = updatedBooking.Date
 
-	return currentBooking.ToBookingDTO()
+	return currentBooking.ToBookingCompleteDTO()
 }
 
 func (repo * BookingsRepositoryImpl) DeleteBooking(id int) (*dtos.BookingCompleteDTO, error) {
@@ -82,7 +82,7 @@ func (repo * BookingsRepositoryImpl) DeleteBooking(id int) (*dtos.BookingComplet
 		if booking.BookingId == id{
 			deletedBooking := booking
 			repo.bookings = append(repo.bookings[:index], repo.bookings[index+1:]...)
-			return deletedBooking.ToBookingDTO(), nil
+			return deletedBooking.ToBookingCompleteDTO(), nil
 		}
 	}
 	return nil, errors.NewBookingNotFoundError()
