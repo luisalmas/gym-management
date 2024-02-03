@@ -69,13 +69,7 @@ func (service *BookingsServiceImpl) UpdateBooking(id int, updatedBooking *dtos.B
 }
 
 func (service *BookingsServiceImpl) DeleteBooking(id int) (*dtos.BookingCompleteDTO, error){
-	currentBooking, errGet := service.BookingsRepository.GetBooking(id)
-	
-	if errGet != nil {
-		return nil, errGet
-	}
-
-	deletedBooking, errDelete := service.BookingsRepository.DeleteBooking(currentBooking.BookingId)
+	deletedBooking, errDelete := service.BookingsRepository.DeleteBooking(id)
 
 	if errDelete != nil {
 		return nil, errDelete

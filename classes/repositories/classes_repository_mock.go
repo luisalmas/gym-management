@@ -15,9 +15,9 @@ func (mockClassesRepo *MockClassesRepository) GetClassesSchedules() *[]dtos.Clas
 	args := mockClassesRepo.Called()
 	return args.Get(0).(*[]dtos.ClassCompleteDTO)
 }
-func (mockClassesRepo *MockClassesRepository) InsertNewClassSchedule(classSchedule *entities.Class) (*dtos.ClassCompleteDTO, error) {
+func (mockClassesRepo *MockClassesRepository) InsertNewClassSchedule(classSchedule *entities.Class) (*dtos.ClassCompleteDTO) {
 	args := mockClassesRepo.Called(classSchedule)
-	return args.Get(0).(*dtos.ClassCompleteDTO), args.Get(1).(error)
+	return args.Get(0).(*dtos.ClassCompleteDTO)
 }
 func (mockClassesRepo *MockClassesRepository) GetClassSchedule(id int) (*entities.Class, error) {
 	args := mockClassesRepo.Called(id)

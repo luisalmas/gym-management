@@ -1,273 +1,224 @@
 package services
 
 import (
-	"errors"
-	"fmt"
 	"gym-management/bookings/models/dtos"
 	"gym-management/bookings/models/entities"
+	"gym-management/bookings/models/errors"
 	"gym-management/bookings/repositories"
+	classesErrors "gym-management/classes/models/errors"
 
 	classesEntities "gym-management/classes/models/entities"
 	classesRepo "gym-management/classes/repositories"
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/require"
 )
 
-var firstbooking = entities.Booking{
-	BookingId: 1,
-	Name:      "Peter",
-	Date:      time.Date(2024, time.January, 25, 0, 0, 0, 0, time.UTC),
-	ClassId:   1,
-}
-
-var secondbooking = entities.Booking{
-	BookingId: 2,
-	Name:      "Samantha",
-	Date:      time.Date(2024, time.January, 26, 0, 0, 0, 0, time.UTC),
-	ClassId:   1,
-}
-
-var class = classesEntities.Class{
+func TestBookingsService(t *testing.T) {
+	var firstbooking = &entities.Booking{
+		BookingId: 1,
+		Name:      "Peter",
+		Date:      time.Date(2024, time.January, 25, 0, 0, 0, 0, time.UTC),
+		ClassId:   1,
+	}
+	
+	var secondbooking = &entities.Booking{
+		BookingId: 2,
+		Name:      "Samantha",
+		Date:      time.Date(2024, time.January, 26, 0, 0, 0, 0, time.UTC),
+		ClassId:   1,
+	}
+	
+	var bookingToInsert = &dtos.BookingDTO{
+		Name: "Jonas",
+		Date: time.Date(2024, time.January, 25, 0, 0, 0, 0, time.UTC),
 		ClassId: 1,
-		Name: "Class1",
-		StartDate: time.Date(2024, time.January, 22, 0, 0, 0, 0, time.UTC),
-		EndDate: time.Date(2024, time.January, 28,  0, 0, 0, 0, time.UTC),
-		Capacity: 10,
 	}
 
-func TestGetBookings(t *testing.T) {
-	bookingsService := NewBookingsService()
-
-	bookRepoMock := new(repositories.MockBookingsRepository)
-	bookRepoMock.On("GetBookings").Return(&[]dtos.BookingCompleteDTO{
-		*firstbooking.ToBookingDTO(),
-		*secondbooking.ToBookingDTO(),
-	})
-
-	bookingsService.BookingsRepository = bookRepoMock
-
-	resultWithValues := bookingsService.GetBookings()
-
-	require.Equal(t, []dtos.BookingCompleteDTO{
-		*firstbooking.ToBookingDTO(),
-		*secondbooking.ToBookingDTO(),
-	}, *resultWithValues)
-}
-
-func TestGetBooking(t *testing.T){
-	bookingsService := NewBookingsService()
-	id := 1
-
-	bookRepoMock := new(repositories.MockBookingsRepository)
-	bookRepoMock.On("GetBooking", id).Return(&firstbooking, nil)
-
-	bookingsService.BookingsRepository = bookRepoMock
-
-	resultWithValues, errWithVals := bookingsService.GetBooking(id)
-
-	require.Nil(t, errWithVals)
-	require.Equal(t, firstbooking.ToBookingDTO(), resultWithValues)
-
-	id = 0
-
-	bookRepoMock.On("GetBooking", id).Return(nil, errors.New("error"))
-
-	resultWithoutValues, errWithoutVals := bookingsService.GetBooking(id)
-
-	require.Nil(t, resultWithoutValues)
-	require.NotNil(t, errWithoutVals)
-}
-
-func TestInsertNewBooking(t *testing.T){
-	bookingsService := NewBookingsService()
-
-	repoMockInsertedBooking := &entities.Booking{
+	var bookingAfterInsert = &dtos.BookingCompleteDTO{
 		BookingId: 3,
 		Name:      "Jonas",
 		Date:      time.Date(2024, time.January, 25, 0, 0, 0, 0, time.UTC),
 		ClassId:   1,
 	}
 
-	 bookRepoMock := new(repositories.MockBookingsRepository)
-	 bookRepoMock.On("InsertNewBooking", mock.AnythingOfType("*entities.Booking")).Return(repoMockInsertedBooking.ToBookingDTO())
-
-	 classesRepoMock := new(classesRepo.MockClassesRepository)
-	 classesRepoMock.On("GetClassSchedule", mock.AnythingOfType("int")).Return(&class, nil)
-
-	 bookingsService.BookingsRepository = bookRepoMock
-	 bookingsService.ClassesRepository = classesRepoMock
-
-	 insertedBooking, errInsert := bookingsService.InsertNewBooking(&dtos.BookingDTO{
-	 	Name: "Jonas",
-	 	Date: time.Date(2024, time.January, 25, 0, 0, 0, 0, time.UTC),
-	 	ClassId: 1,
-	 })
-
-	 require.Nil(t, errInsert)
-	 require.Equal(t, dtos.BookingCompleteDTO{
-	 	BookingId: 3,
-	 	Name:      "Jonas",
-	 	Date:      time.Date(2024, time.January, 25, 0, 0, 0, 0, time.UTC),
-	 	ClassId:   1,
-	 }, *insertedBooking)
-
-
-	invalidBooking, err := bookingsService.InsertNewBooking(&dtos.BookingDTO{
+	var bookingToInsertInvalidDate = &dtos.BookingDTO{
 		Name: "Jonas",
 		Date: time.Date(2024, time.December, 25, 0, 0, 0, 0, time.UTC),
 		ClassId: 1,
-	})
-
-	require.Nil(t, invalidBooking)
-	require.NotNil(t, err)
-
-	classesRepoMock = new(classesRepo.MockClassesRepository)
-	classesRepoMock.On("GetClassSchedule", mock.AnythingOfType("int")).Return(nil, errors.New("error"))
-	bookingsService.ClassesRepository = classesRepoMock
-
-	bookingNoClass, errNoclass := bookingsService.InsertNewBooking(&dtos.BookingDTO{
-		Name: "Jonas",
-		Date: time.Date(2024, time.December, 25, 0, 0, 0, 0, time.UTC),
-		ClassId: 1,
-	})
-
-	require.Nil(t, bookingNoClass)
-	require.NotNil(t, errNoclass)
-}
-
-func TestUpdateBooking(t *testing.T) {
-	bookingsService := NewBookingsService()
-
- 	mockUpdatedBooking := entities.Booking{
-	 	BookingId: 1,
-	 	Name:      "Sam",
-	 	Date:      time.Date(2024, time.January, 26, 0, 0, 0, 0, time.UTC),
-	 	ClassId:   1,
 	}
 
+	var class = &classesEntities.Class{
+			ClassId: 1,
+			Name: "Class1",
+			StartDate: time.Date(2024, time.January, 22, 0, 0, 0, 0, time.UTC),
+			EndDate: time.Date(2024, time.January, 28,  0, 0, 0, 0, time.UTC),
+			Capacity: 10,
+		}
+
+	bookingsService := NewBookingsService()
 	bookRepoMock := new(repositories.MockBookingsRepository)
-	bookRepoMock.On("GetBooking", mock.AnythingOfType("int")).Return(nil, errors.New("error"))
 	bookingsService.BookingsRepository = bookRepoMock
 
 	classesRepoMock := new(classesRepo.MockClassesRepository)
-	classesRepoMock.On("GetClassSchedule", class.ClassId).Return(&class, nil)
-
-	updatedBookingNoneExisting, errGet, errUpdate := bookingsService.UpdateBooking(1, &dtos.BookingDTO{
-		Name:      "Sam",
-	 	Date:      time.Date(2024, time.January, 26, 0, 0, 0, 0, time.UTC),
-	 	ClassId:   1,
-	})
-
-	require.NotNil(t, errGet)
-	require.Nil(t, errUpdate)
-	require.Nil(t, updatedBookingNoneExisting)
-
-	bookRepoMock = new(repositories.MockBookingsRepository)
-	bookRepoMock.On("GetBooking", mock.AnythingOfType("int")).Return(&firstbooking, nil)
- 	bookRepoMock.On("UpdateBooking", mock.AnythingOfType("int"), mock.AnythingOfType("*entities.Booking")).Return(mockUpdatedBooking.ToBookingDTO(), nil)
-
-	bookingsService.BookingsRepository = bookRepoMock
 	bookingsService.ClassesRepository = classesRepoMock
 
-	updatedBooking, errGet, errUpdate := bookingsService.UpdateBooking(1, &dtos.BookingDTO{
-		Name:      "Sam",
-	 	Date:      time.Date(2024, time.January, 26, 0, 0, 0, 0, time.UTC),
-	 	ClassId:   1,
+	//===================== GetBookings tests ==============================================
+
+	t.Run("GetBookings", func(t *testing.T) {
+		bookRepoMock.On("GetBookings").Return(&[]dtos.BookingCompleteDTO{
+			*firstbooking.ToBookingDTO(),
+			*secondbooking.ToBookingDTO(),
+		}).Once()
+
+		resultWithValues := bookingsService.GetBookings()
+
+		assert.Equal(t, []dtos.BookingCompleteDTO{
+			*firstbooking.ToBookingDTO(),
+			*secondbooking.ToBookingDTO(),
+		}, *resultWithValues)
 	})
 
-	require.Nil(t, errGet)
-	require.Nil(t, errUpdate)
-	require.Equal(t, mockUpdatedBooking.ToBookingDTO(), updatedBooking)
+	//===================== GetBooking tests ==============================================
 
-	updatedBookingInvalid, errGet, errUpdate := bookingsService.UpdateBooking(1, &dtos.BookingDTO{
-		Name:      "Sam",
-	 	Date:      time.Date(2024, time.December, 26, 0, 0, 0, 0, time.UTC),
-	 	ClassId:   1,
+	t.Run("GetBooking", func(t *testing.T){
+		bookRepoMock.On("GetBooking", mock.Anything).Return(firstbooking, nil).Once()
+
+		result, errWithVals := bookingsService.GetBooking(firstbooking.BookingId)
+
+		assert.Nil(t, errWithVals)
+		assert.Equal(t, firstbooking.ToBookingDTO(), result)
 	})
 
-	require.Nil(t, errGet)
-	require.NotNil(t, errUpdate)
-	require.Nil(t, updatedBookingInvalid)
-}
+	t.Run("GetBookingNotFound", func(t *testing.T){
+		bookRepoMock.On("GetBooking", mock.Anything).Return(nil, errors.NewBookingNotFoundError()).Once()
 
-func TestDeleteBooking(t *testing.T){
-	bookingsService := NewBookingsService()
+		result, errWithVals := bookingsService.GetBooking(firstbooking.BookingId)
 
-	bookRepoMock := new(repositories.MockBookingsRepository)
-	bookRepoMock.On("GetBooking", mock.AnythingOfType("int")).Return(&firstbooking, nil)
-	bookRepoMock.On("DeleteBooking", mock.AnythingOfType("int")).Return(firstbooking.ToBookingDTO(), nil)
-	bookingsService.BookingsRepository = bookRepoMock
-
-	deletedBooking, errGet, errDelete := bookingsService.DeleteBooking(1)
-
-	require.Nil(t, errGet)
-	require.Nil(t, errDelete)
-	require.Equal(t, firstbooking.ToBookingDTO(), deletedBooking)
-
-	bookRepoMock = new(repositories.MockBookingsRepository)
-	bookRepoMock.On("GetBooking", mock.AnythingOfType("int")).Return(nil, errors.New("error"))
-	bookingsService.BookingsRepository = bookRepoMock
-
-	deletedBooking, errGet, errDelete = bookingsService.DeleteBooking(0)
-
-	require.NotNil(t, errGet)
-	require.Nil(t, errDelete)
-	require.Nil(t, deletedBooking)
-
-	bookRepoMock = new(repositories.MockBookingsRepository)
-	bookRepoMock.On("GetBooking", mock.AnythingOfType("int")).Return(&firstbooking, nil)
-	bookRepoMock.On("DeleteBooking", mock.AnythingOfType("int")).Return(nil, errors.New("error"))
-	bookingsService.BookingsRepository = bookRepoMock
-
-	deletedBooking, errGet, errDelete = bookingsService.DeleteBooking(1)
-
-	fmt.Println(errGet)
-
-	require.Nil(t, errGet)
-	require.Nil(t, deletedBooking)
-	require.NotNil(t, errDelete)
-}
-
-func TestValidateBooking(t *testing.T){
-	bookingsService := NewBookingsService()
-
-	classesRepoMock := new(classesRepo.MockClassesRepository)
-	classesRepoMock.On("GetClassSchedule", class.ClassId).Return(&class, nil)
-
-	bookingsService.ClassesRepository = classesRepoMock
-
-	err := bookingsService.validateBooking(&dtos.BookingDTO{
-		Name:      "Sam",
-	 	Date:      time.Date(2024, time.January, 26, 0, 0, 0, 0, time.UTC),
-	 	ClassId:   1,
+		assert.NotNil(t, errWithVals)
+		assert.Nil(t, result)
 	})
 
-	require.Nil(t, err)
+	//===================== InsertBooking tests ==============================================
 
-	classesRepoMock = new(classesRepo.MockClassesRepository)
-	classesRepoMock.On("GetClassSchedule", class.ClassId).Return(nil, errors.New("error"))
-	bookingsService.ClassesRepository = classesRepoMock
+	t.Run("InsertNewBooking", func(t *testing.T){
+		bookRepoMock.On("InsertNewBooking", mock.Anything).Return(bookingAfterInsert).Once()
+	 	classesRepoMock.On("GetClassSchedule", mock.AnythingOfType("int")).Return(class, nil).Once()
 
-	err = bookingsService.validateBooking(&dtos.BookingDTO{
-		Name:      "Sam",
-	 	Date:      time.Date(2024, time.January, 26, 0, 0, 0, 0, time.UTC),
-	 	ClassId:   1,
+		insertedBooking, errInsert := bookingsService.InsertNewBooking(bookingToInsert)
+   
+		assert.Nil(t, errInsert)
+		assert.Equal(t, *bookingAfterInsert, *insertedBooking)
 	})
 
-	require.NotNil(t, err)
+	t.Run("InsertBookingInvalidClass", func(t *testing.T){
+		classesRepoMock.On("GetClassSchedule", mock.AnythingOfType("int")).Return(nil, classesErrors.NewClassNotFoundError()).Once()
 
-	classesRepoMock = new(classesRepo.MockClassesRepository)
-	classesRepoMock.On("GetClassSchedule", class.ClassId).Return(&class, nil)
-	bookingsService.ClassesRepository = classesRepoMock
-
-	err = bookingsService.validateBooking(&dtos.BookingDTO{
-		Name:      "Sam",
-	 	Date:      time.Date(2024, time.December, 26, 0, 0, 0, 0, time.UTC),
-	 	ClassId:   1,
+		insertedBooking, errInsert := bookingsService.InsertNewBooking(bookingToInsert)
+   
+		assert.Nil(t, insertedBooking)
+		assert.NotNil(t, errInsert)
 	})
 
-	require.NotNil(t, err)
+	t.Run("InsertBookingInvalidDate", func(t *testing.T){
+		classesRepoMock.On("GetClassSchedule", mock.AnythingOfType("int")).Return(class, nil).Once()
+
+		insertedBooking, errInsert := bookingsService.InsertNewBooking(bookingToInsertInvalidDate)
+
+		assert.Nil(t, insertedBooking)
+		assert.NotNil(t, errInsert)
+	})
+
+	//===================== UpdateBookings tests ==============================================
+
+	t.Run("UpdateBooking", func(t *testing.T){
+		bookRepoMock.On("GetBooking", mock.Anything).Return(firstbooking, nil).Once()
+		classesRepoMock.On("GetClassSchedule", mock.AnythingOfType("int")).Return(class, nil).Once()
+		bookRepoMock.On("UpdateBooking", mock.Anything, mock.Anything).Return(bookingAfterInsert).Once()
+
+		updatedBooking, err := bookingsService.UpdateBooking(1, bookingToInsert)
+
+		assert.Nil(t, err)
+		assert.Equal(t, bookingAfterInsert, updatedBooking)
+	})
+
+	t.Run("UpdateBookingBookingNotFound", func(t *testing.T){
+		bookRepoMock.On("GetBooking", mock.Anything).Return(nil, errors.NewBookingNotFoundError()).Once()
+	
+		 updatedBooking, err := bookingsService.UpdateBooking(1, bookingToInsert)
+
+		 assert.NotNil(t, err)
+		 assert.Nil(t, updatedBooking)
+	})
+
+	t.Run("UpdateBookingClassNotFound", func(t *testing.T){
+		bookRepoMock.On("GetBooking", mock.Anything).Return(firstbooking, nil).Once()
+		classesRepoMock.On("GetClassSchedule", mock.AnythingOfType("int")).Return(nil, classesErrors.NewClassNotFoundError()).Once()
+
+		 updatedBooking, err := bookingsService.UpdateBooking(1, bookingToInsert)
+
+		 assert.NotNil(t, err)
+		 assert.Nil(t, updatedBooking)
+	})
+
+	t.Run("UpdateBookingInvalidDate", func(t *testing.T){
+		bookRepoMock.On("GetBooking", mock.Anything).Return(firstbooking, nil).Once()
+		classesRepoMock.On("GetClassSchedule", mock.AnythingOfType("int")).Return(class, nil).Once()
+
+		updatedBooking, err := bookingsService.UpdateBooking(1, bookingToInsertInvalidDate)
+
+		assert.NotNil(t, err)
+		assert.Nil(t, updatedBooking)
+	})
+
+	//===================== DeleteBookings tests ==============================================
+
+	t.Run("DeleteBooking", func(t *testing.T){
+		bookRepoMock.On("DeleteBooking", mock.Anything).Return(firstbooking.ToBookingDTO(), nil).Once()
+
+		deletedBooking, err := bookingsService.DeleteBooking(1)
+
+		assert.Nil(t, err)
+		assert.Equal(t, firstbooking.ToBookingDTO(), deletedBooking)
+	})
+
+	t.Run("DeleteBookingNotFound", func(t *testing.T){
+		bookRepoMock.On("DeleteBooking", mock.Anything).Return(nil, errors.NewBookingNotFoundError()).Once()
+		
+		deletedBooking, err := bookingsService.DeleteBooking(1)
+
+		assert.NotNil(t, err)
+		assert.Nil(t, deletedBooking)
+	})
+
+	//===================== validateBooking tests ==============================================
+
+	t.Run("validateBooking", func(t *testing.T){
+		classesRepoMock.On("GetClassSchedule", class.ClassId).Return(class, nil).Once()
+
+		err := bookingsService.validateBooking(bookingToInsert)
+
+		assert.Nil(t, err)
+	})
+
+	t.Run("validateBookingClassNotFound", func(t *testing.T){
+		classesRepoMock.On("GetClassSchedule", class.ClassId).Return(nil, classesErrors.NewClassNotFoundError()).Once()
+
+		err := bookingsService.validateBooking(bookingToInsert)
+
+		assert.NotNil(t, err)
+	})
+
+	t.Run("validateBookingInvalidDate", func(t *testing.T){
+		classesRepoMock.On("GetClassSchedule", class.ClassId).Return(class, nil).Once()
+
+		err := bookingsService.validateBooking(bookingToInsertInvalidDate)
+
+		assert.NotNil(t, err)
+	})
+
+	bookRepoMock.AssertExpectations(t)
+	classesRepoMock.AssertExpectations(t)
 }
