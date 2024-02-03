@@ -21,3 +21,10 @@ func NewClassNotFoundError() *ClassesError {
 		Code:    http.StatusNotFound,
 	}
 }
+
+func NewClassInvalidError(msg string) *ClassesError {
+	return &ClassesError{
+		Message: msg,
+		Code:    http.StatusBadRequest,
+	}
+}

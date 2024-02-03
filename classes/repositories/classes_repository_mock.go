@@ -41,5 +41,17 @@ func (mockClassesRepo *MockClassesRepository) UpdateClass(id int, updatedClass *
 }
 func (mockClassesRepo *MockClassesRepository) DeleteClass(id int) (*dtos.ClassCompleteDTO, error) {
 	args := mockClassesRepo.Called(id)
-	return args.Get(0).(*dtos.ClassCompleteDTO), args.Get(1).(error)
+	if args.Get(0) != nil && args.Get(1) != nil {
+		return args.Get(0).(*dtos.ClassCompleteDTO), args.Get(1).(error)
+	}
+
+	if args.Get(1) == nil{
+		return args.Get(0).(*dtos.ClassCompleteDTO), nil
+	}
+
+	if args.Get(0) == nil{
+		return nil, args.Get(1).(error)
+	}
+
+	return nil, nil
 }

@@ -1,8 +1,8 @@
 package entities
 
 import (
-	"errors"
 	"gym-management/classes/models/dtos"
+	"gym-management/classes/models/errors"
 	"time"
 )
 
@@ -17,11 +17,11 @@ type Class struct {
 func (class *Class) New(classDTO *dtos.ClassDTO) (*Class, error) {
 
 	if classDTO.StartDate.Compare(classDTO.EndDate) == 1 {
-		return nil, errors.New("Class: invalid dates")
+		return nil, errors.NewClassInvalidError("Class: invalid dates")
 	}
 
 	if classDTO.Capacity < 1 {
-		return nil, errors.New("Class: cannot have capacity less than 1")
+		return nil, errors.NewClassInvalidError("Class: cannot have capacity less than 1")
 	}
 
 	return &Class{

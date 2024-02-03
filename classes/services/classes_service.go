@@ -38,21 +38,26 @@ func (service *ClassesServiceImpl) InsertNewClass(classSchedule *dtos.ClassDTO) 
 
 func (service *ClassesServiceImpl) GetClass(id int) (*dtos.ClassCompleteDTO, error) {
 	classEntity, err := service.ClassesRepository.GetClass(id)
+
+	if err != nil{
+		return nil, err
+	}
+
 	return classEntity.ToClassCompleteDTO(), err
 }
 
-func (service *ClassesServiceImpl) UpdateClass(id int, classSchedule *dtos.ClassDTO) (*dtos.ClassCompleteDTO, error, error) {
+func (service *ClassesServiceImpl) UpdateClass(id int, classSchedule *dtos.ClassDTO) (*dtos.ClassCompleteDTO, error) {
 	currentClass, errGet := service.ClassesRepository.GetClass(id)
 
 	if errGet != nil {
-		return nil, errGet, nil
+		return nil, errGet
 	}
 
 	classEntity := &entities.Class{}
 	updatedClass, errUpdate := classEntity.New(classSchedule)
 
 	if errUpdate != nil {
-		return nil, nil, errUpdate
+		return nil, errUpdate
 	}
 
 	updatedClass.ClassId = currentClass.ClassId
@@ -60,26 +65,20 @@ func (service *ClassesServiceImpl) UpdateClass(id int, classSchedule *dtos.Class
 	//Cascade delete (for bookings outside the date range of the class)
 	service.BookingsRepository.DeleteBookingsFromClass(updatedClass.ClassId, updatedClass.StartDate, updatedClass.EndDate)
 
-	return service.ClassesRepository.UpdateClass(id, updatedClass), nil, nil
+	return service.ClassesRepository.UpdateClass(id, updatedClass), nil
 }
 
-func (service *ClassesServiceImpl) DeleteClass(id int) (*dtos.ClassCompleteDTO, error, error) {
-	currentClass, errGet := service.ClassesRepository.GetClass(id)
-
-	if errGet != nil {
-		return nil, errGet, nil
-	}
-
-	deletedClass, errorDelete := service.ClassesRepository.DeleteClass(currentClass.ClassId)
+func (service *ClassesServiceImpl) DeleteClass(id int) (*dtos.ClassCompleteDTO, error) {
+	deletedClass, errorDelete := service.ClassesRepository.DeleteClass(id)
 
 	if errorDelete != nil {
-		return nil, nil, errorDelete
+		return nil, errorDelete
 	}
 
 	//Cascade delete
 	service.BookingsRepository.DeleteBookingsFromClass(deletedClass.ClassId, time.Time{}, time.Time{})
 
-	return deletedClass, nil, nil
+	return deletedClass, nil
 }
 
 func (service *ClassesServiceImpl) GetBookingsFromClass(id int, date time.Time) (*[]bookingsDtos.BookingCompleteDTO, error){
