@@ -17,296 +17,250 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var firstbooking = dtos.BookingCompleteDTO{
-	BookingId: 1,
-	Name: "Peter",
-	Date: time.Date(2024, time.January, 25,  0, 0, 0, 0, time.UTC),
-	ClassId: 1,
-}
+func TestBookingsController(t *testing.T) {
+	var firstbooking = &dtos.BookingCompleteDTO{
+		BookingId: 1,
+		Name: "Peter",
+		Date: time.Date(2024, time.January, 25,  0, 0, 0, 0, time.UTC),
+		ClassId: 1,
+	}
+	
+	var secondbooking = &dtos.BookingCompleteDTO{
+		BookingId: 2,
+		Name: "Samantha",
+		Date: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
+		ClassId: 1,
+	}
+	
+	var bookingToInsert = &dtos.BookingDTO{
+		Name: "Dany",
+		Date: time.Date(2024, time.January, 27,  0, 0, 0, 0, time.UTC),
+		ClassId: 1,
+	}
+	
+	var insertedbooking = &dtos.BookingCompleteDTO{
+		BookingId: 4,
+		Name: "Dany",
+		Date: time.Date(2024, time.January, 27,  0, 0, 0, 0, time.UTC),
+		ClassId: 1,
+	}
 
-var secondbooking = dtos.BookingCompleteDTO{
-	BookingId: 2,
-	Name: "Samantha",
-	Date: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
-	ClassId: 1,
-}
-
-var bookingToInsert = &dtos.BookingDTO{
-	Name: "Dany",
-	Date: time.Date(2024, time.January, 27,  0, 0, 0, 0, time.UTC),
-	ClassId: 1,
-}
-
-var insertedbooking = &dtos.BookingCompleteDTO{
-	BookingId: 4,
-	Name: "Dany",
-	Date: time.Date(2024, time.January, 27,  0, 0, 0, 0, time.UTC),
-	ClassId: 1,
-}
-
-func setupController() (*BookingsControllerImpl, *gin.Engine) {
 	controller := NewBookingsController()
 	router := gin.Default()
 	prefix := router.Group("/api")
 	
 	controller.SetupRoutes(prefix)
 
-	return controller, router
-}
-
-func testHttpRequest(verb string, uri string, body any, router *gin.Engine) (*httptest.ResponseRecorder) {
-	request, _ := http.NewRequest(verb, uri, nil)
-	response := httptest.NewRecorder()
-	router.ServeHTTP(response, request)
-
-	return response
-}
-
-func setBookingsMock(controller *BookingsControllerImpl, functionName string, args []any, returns []any){
 	bookingsMock := new(services.MockBookingsService)
-	bookingsMock.On(functionName, args...).Return(returns...)
-	controller.BookingsService = bookingsMock
-}
-
-//===================== GetBookings tests ==============================================
-
-func TestGetBookings(t *testing.T) {
-	controller, router := setupController()
-
-	setBookingsMock(
-		controller,
-		"GetBookings",
-		[]any{},
-		[]any{&[]dtos.BookingCompleteDTO{firstbooking,secondbooking}},
-	)
-
-	response := testHttpRequest(
-		"GET",
-		"/api/bookings",
-		nil,
-		router,
-	)
-
-	assert.Equal(t, http.StatusOK, response.Code)
-	var responseData []dtos.BookingCompleteDTO
-	err := json.Unmarshal(response.Body.Bytes(), &responseData)
-	assert.Nil(t, err)
-	assert.Equal(t, []dtos.BookingCompleteDTO{
-		firstbooking,
-		secondbooking,
-	}, responseData)
-}
-
-//===================== GetBooking tests ==============================================
-
-func TestGetBooking(t *testing.T) {
-	controller, router := setupController()
-
-	setBookingsMock(
-		controller,
-		"GetBooking",
-		[]any{mock.AnythingOfType("int")},
-		[]any{&firstbooking, nil},
-	)
-
-	response := testHttpRequest(
-		"GET",
-		"/api/bookings/1",
-		nil,
-		router,
-	)
-
-	require.Equal(t, http.StatusOK, response.Code)
-	var responseData dtos.BookingCompleteDTO
-	err := json.Unmarshal(response.Body.Bytes(), &responseData)
-	require.Nil(t, err)
-	require.Equal(t, firstbooking, responseData)
-}
-
-func TestGetBookingInvalidId(t *testing.T) {
-	controller, router := setupController()
-
-	setBookingsMock(
-		controller,
-		"GetBooking",
-		[]any{mock.AnythingOfType("int")},
-		[]any{nil, errors.New("error")},
-	)
-
-	response := testHttpRequest(
-		"GET",
-		"/api/bookings/asd",
-		nil,
-		router,
-	)
-
-	require.Equal(t, http.StatusBadRequest, response.Code)
-}
-
-func TestGetBookingNotFound(t *testing.T) {
-	controller, router := setupController()
-
-	setBookingsMock(
-		controller,
-		"GetBooking",
-		[]any{mock.AnythingOfType("int")},
-		[]any{nil, errors.New("error")},
-	)
-
-	response := testHttpRequest(
-		"GET",
-		"/api/bookings/1",
-		nil,
-		router,
-	)
-
-	require.Equal(t, http.StatusNotFound, response.Code)
-}
-
-//===================== PostBookings tests ==============================================
-
-func TestPostBookings(t *testing.T) {
-	controller, router := setupController()
-
-	req, _ := http.NewRequest("POST", "/api/bookings", nil)
-	resp := httptest.NewRecorder()
-	router.ServeHTTP(resp, req)
-
-	require.Equal(t, http.StatusBadRequest, resp.Code)
-
-	bookingsMock := new(services.MockBookingsService)
-	bookingsMock.On("InsertNewBooking", bookingToInsert).Return(insertedbooking, nil)
 	controller.BookingsService = bookingsMock
 
-	jsonData, errorJson := json.Marshal(bookingToInsert)
-	require.Nil(t, errorJson)
-	req, _ = http.NewRequest("POST", "/api/bookings", strings.NewReader(string(jsonData)))
-	resp = httptest.NewRecorder()
-	router.ServeHTTP(resp, req)
+	//===================== GetBookings tests ==============================================
 
-	require.Equal(t, http.StatusCreated, resp.Code)
-	var response dtos.BookingCompleteDTO
-	err := json.Unmarshal(resp.Body.Bytes(), &response)
-	require.Nil(t, err)
-	require.Equal(t, *insertedbooking, response)
+	t.Run("GetBookings", func(t *testing.T) {
+		bookingsMock.On("GetBookings", mock.Anything).Return(&[]dtos.BookingCompleteDTO{*firstbooking,*secondbooking}).Once()
 
-	bookingsMock = new(services.MockBookingsService)
-	bookingsMock.On("InsertNewBooking", bookingToInsert).Return(nil, errors.New("error"))
-	controller.BookingsService = bookingsMock
+		request, _ := http.NewRequest("GET","/api/bookings",nil)
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
 
-	jsonData, errorJson = json.Marshal(bookingToInsert)
-	require.Nil(t, errorJson)
-	req, _ = http.NewRequest("POST", "/api/bookings", strings.NewReader(string(jsonData)))
-	resp = httptest.NewRecorder()
-	router.ServeHTTP(resp, req)
+		assert.Equal(t, http.StatusOK, response.Code)
+		var responseData []dtos.BookingCompleteDTO
+		err := json.Unmarshal(response.Body.Bytes(), &responseData)
+		assert.Nil(t, err)
+		assert.Equal(t, []dtos.BookingCompleteDTO{*firstbooking,*secondbooking}, responseData)
+	})
 
-	require.Equal(t, http.StatusBadRequest, resp.Code)
-}
+	//===================== GetBooking tests ==============================================
 
-//===================== PutBookings tests ==============================================
+	t.Run("GetBooking", func(t *testing.T) {
+		bookingsMock.On("GetBooking", mock.Anything).Return(firstbooking, nil).Once()
 
-func TestPutBookings(t *testing.T){
-	controller, router := setupController()
+		request, _ := http.NewRequest("GET","/api/bookings/1",nil)
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
 
-	req, _ := http.NewRequest("PUT", "/api/bookings/1", nil)
-	resp := httptest.NewRecorder()
-	router.ServeHTTP(resp, req)
+		assert.Equal(t, http.StatusOK, response.Code)
+		var responseData dtos.BookingCompleteDTO
+		err := json.Unmarshal(response.Body.Bytes(), &responseData)
+		assert.Nil(t, err)
+		assert.Equal(t, *firstbooking, responseData)
+	})
 
-	require.Equal(t, http.StatusBadRequest, resp.Code)
+	t.Run("GetBookingInvalidId", func(t *testing.T){
 
-	jsonData, errorJson := json.Marshal(bookingToInsert)
-	require.Nil(t, errorJson)
-	req, _ = http.NewRequest("PUT", "/api/bookings/sdf", strings.NewReader(string(jsonData)))
-	resp = httptest.NewRecorder()
-	router.ServeHTTP(resp, req)
+		request, _ := http.NewRequest("GET","/api/bookings/asd", nil)
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
 
-	require.Equal(t, http.StatusBadRequest, resp.Code)
+		assert.Equal(t, http.StatusBadRequest, response.Code)
+	})
 
-	bookingsMock := new(services.MockBookingsService)
-	bookingsMock.On("UpdateBooking", mock.AnythingOfType("int"), bookingToInsert).Return(insertedbooking, nil, nil)
-	controller.BookingsService = bookingsMock
+	t.Run("GetBookingNotFound", func(t *testing.T){
+		bookingsMock.On("GetBooking", mock.Anything).Return(nil, errors.New("error")).Once()
 
-	jsonData, errorJson = json.Marshal(bookingToInsert)
-	require.Nil(t, errorJson)
-	req, _ = http.NewRequest("PUT", "/api/bookings/4", strings.NewReader(string(jsonData)))
-	resp = httptest.NewRecorder()
-	router.ServeHTTP(resp, req)
-	var response dtos.BookingCompleteDTO
-	err := json.Unmarshal(resp.Body.Bytes(), &response)
+		request, _ := http.NewRequest("GET","/api/bookings/1",nil)
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
 
-	require.Nil(t, err)
-	require.Equal(t, http.StatusOK, resp.Code)
-	require.Equal(t, *insertedbooking, response)
+		assert.Equal(t, http.StatusNotFound, response.Code)
+	})
 
-	bookingsMock = new(services.MockBookingsService)
-	bookingsMock.On("UpdateBooking", mock.AnythingOfType("int"), bookingToInsert).Return(nil, errors.New("error"), nil)
-	controller.BookingsService = bookingsMock
+	//===================== PostBookings tests ==============================================
 
-	jsonData, errorJson = json.Marshal(bookingToInsert)
-	require.Nil(t, errorJson)
-	req, _ = http.NewRequest("PUT", "/api/bookings/4", strings.NewReader(string(jsonData)))
-	resp = httptest.NewRecorder()
-	router.ServeHTTP(resp, req)
+	t.Run("PostBookings", func(t *testing.T){
+		bookingsMock.On("InsertNewBooking", mock.Anything).Return(insertedbooking, nil).Once()
+		
+		jsonData, errorJson := json.Marshal(*bookingToInsert)
 
-	require.Equal(t, http.StatusNotFound, resp.Code)
+		assert.Nil(t, errorJson)
 
-	bookingsMock = new(services.MockBookingsService)
-	bookingsMock.On("UpdateBooking", mock.AnythingOfType("int"), bookingToInsert).Return(nil, nil, errors.New("error"))
-	controller.BookingsService = bookingsMock
+		request, _ := http.NewRequest("POST", "/api/bookings", strings.NewReader(string(jsonData)))
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
 
-	jsonData, errorJson = json.Marshal(bookingToInsert)
-	require.Nil(t, errorJson)
-	req, _ = http.NewRequest("PUT", "/api/bookings/4", strings.NewReader(string(jsonData)))
-	resp = httptest.NewRecorder()
-	router.ServeHTTP(resp, req)
+		var responseData dtos.BookingCompleteDTO
+		err := json.Unmarshal(response.Body.Bytes(), &responseData)
 
-	require.Equal(t, http.StatusBadRequest, resp.Code)
-}
+		assert.Equal(t, http.StatusCreated, response.Code)
+		assert.Nil(t, err)
+		assert.Equal(t, *insertedbooking, responseData)
+	})
 
-//===================== DeleteBookings tests ==============================================
+	t.Run("PostBookingsNoBody", func(t *testing.T){
 
-func TestDeleteBookings(t *testing.T){
-	controller, router := setupController()
+		request, _ := http.NewRequest("POST", "/api/bookings", nil)
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
 
-	response := testHttpRequest("DELETE", "/api/bookings/asd", nil, router)
+		assert.Equal(t, http.StatusBadRequest, response.Code)
+	})
 
-	require.Equal(t, http.StatusBadRequest, response.Code)
+	t.Run("PostBookingWithError", func(t *testing.T){
+		bookingsMock.On("InsertNewBooking", bookingToInsert).Return(nil, errors.New("error")).Once()
 
-	setBookingsMock(
-		controller,
-		"DeleteBooking",
-		[]any{mock.AnythingOfType("int")},
-		[]any{insertedbooking, nil, nil},
-	)
+		jsonData, errorJson := json.Marshal(bookingToInsert)
 
-	response = testHttpRequest("DELETE", "/api/bookings/1", nil, router)
+		assert.Nil(t, errorJson)
 
-	var responseData dtos.BookingCompleteDTO
-	err := json.Unmarshal(response.Body.Bytes(), &responseData)
+		request, _ := http.NewRequest("POST", "/api/bookings", strings.NewReader(string(jsonData)))
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
 
-	require.Nil(t, err)
-	require.Equal(t, http.StatusOK, response.Code)
-	require.Equal(t, *insertedbooking, responseData)
+		assert.Equal(t, http.StatusBadRequest, response.Code)
+	})
 
-	setBookingsMock(
-		controller,
-		"DeleteBooking",
-		[]any{mock.AnythingOfType("int")},
-		[]any{nil, errors.New("error"), nil},
-	)
+	//===================== PutBookings tests ==============================================
+	
+	t.Run("PutBooking", func(t *testing.T){
+		bookingsMock.On("UpdateBooking", mock.AnythingOfType("int"), bookingToInsert).Return(insertedbooking, nil, nil).Once()
+		
+		jsonData, errorJson := json.Marshal(bookingToInsert)
+		assert.Nil(t, errorJson)
 
-	response = testHttpRequest("DELETE", "/api/bookings/1", nil, router)
+		request, _ := http.NewRequest("PUT", "/api/bookings/4", strings.NewReader(string(jsonData)))
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
 
-	require.Equal(t, http.StatusNotFound, response.Code)
+		var responseData dtos.BookingCompleteDTO
+		err := json.Unmarshal(response.Body.Bytes(), &responseData)
 
-	setBookingsMock(
-		controller,
-		"DeleteBooking",
-		[]any{mock.AnythingOfType("int")},
-		[]any{nil, nil, errors.New("error")},
-	)
+		assert.Nil(t, err)
+		assert.Equal(t, http.StatusOK, response.Code)
+		assert.Equal(t, *insertedbooking, responseData)
+	})
 
-	response = testHttpRequest("DELETE", "/api/bookings/1", nil, router)
+	t.Run("PutBookingNoBody", func(t *testing.T){
 
-	require.Equal(t, http.StatusBadRequest, response.Code)
+		request, _ := http.NewRequest("PUT", "/api/bookings/1", nil)
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
+
+		assert.Equal(t, http.StatusBadRequest, response.Code)
+	})
+
+	t.Run("PutBookingInvalidId", func(t *testing.T){
+		jsonData, errorJson := json.Marshal(bookingToInsert)
+		assert.Nil(t, errorJson)
+
+		request, _ := http.NewRequest("PUT", "/api/bookings/asd", strings.NewReader(string(jsonData)))
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
+
+		assert.Equal(t, http.StatusBadRequest, response.Code)
+	})
+
+	t.Run("PutBookingNotFound", func(t *testing.T){
+		bookingsMock.On("UpdateBooking", mock.Anything, bookingToInsert).Return(nil, errors.New("error"), nil).Once()
+
+		jsonData, errorJson := json.Marshal(*bookingToInsert)
+		assert.Nil(t, errorJson)
+
+		request, _ := http.NewRequest("PUT", "/api/bookings/4", strings.NewReader(string(jsonData)))
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
+
+		assert.Equal(t, http.StatusNotFound, response.Code)
+	})
+
+	t.Run("PutBookingError", func(t *testing.T){
+		bookingsMock.On("UpdateBooking", mock.Anything, bookingToInsert).Return(nil, nil, errors.New("error")).Once()
+
+		jsonData, errorJson := json.Marshal(bookingToInsert)
+		assert.Nil(t, errorJson)
+
+		request, _ := http.NewRequest("PUT", "/api/bookings/4", strings.NewReader(string(jsonData)))
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
+
+
+		require.Equal(t, http.StatusBadRequest, response.Code)
+	})
+
+	//===================== DeleteBookings tests ==============================================
+
+	t.Run("DeleteBooking", func(t *testing.T){
+		bookingsMock.On("DeleteBooking", mock.Anything).Return(insertedbooking, nil, nil).Once()
+
+		request, _ := http.NewRequest("DELETE", "/api/bookings/1", nil)
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
+
+		var responseData dtos.BookingCompleteDTO
+		err := json.Unmarshal(response.Body.Bytes(), &responseData)
+
+		assert.Nil(t, err)
+		assert.Equal(t, http.StatusOK, response.Code)
+		assert.Equal(t, *insertedbooking, responseData)
+	})
+
+	t.Run("DeleteBookingInvalidId", func(t *testing.T){
+
+		request, _ := http.NewRequest("DELETE", "/api/bookings/asd", nil)
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
+
+		require.Equal(t, http.StatusBadRequest, response.Code)
+	})
+
+	t.Run("DeleteBookingNotFound", func(t *testing.T){
+		bookingsMock.On("DeleteBooking", mock.Anything).Return(nil, errors.New("error"), nil).Once()
+
+		request, _ := http.NewRequest("DELETE", "/api/bookings/1", nil)
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
+
+		assert.Equal(t, http.StatusNotFound, response.Code)
+	})
+
+	t.Run("DeleteBookingError", func(t *testing.T){
+		bookingsMock.On("DeleteBooking", mock.Anything).Return(nil, nil, errors.New("error")).Once()
+
+		request, _ := http.NewRequest("DELETE", "/api/bookings/1", nil)
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
+
+		assert.Equal(t, http.StatusBadRequest, response.Code)
+	})
+
+	bookingsMock.AssertExpectations(t)
 }

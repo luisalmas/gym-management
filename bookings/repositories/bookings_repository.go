@@ -7,21 +7,6 @@ import (
 	"time"
 )
 
-// var bookings = []entities.Booking {
-// 	{
-// 		BookingId: 1,
-// 		Name: "Peter",
-// 		Date: time.Date(2024, time.January, 25,  0, 0, 0, 0, time.UTC),
-// 		ClassId: 1,
-// 	},
-// 	{
-// 		BookingId: 2,
-// 		Name: "Samantha",
-// 		Date: time.Date(2024, time.January, 26,  0, 0, 0, 0, time.UTC),
-// 		ClassId: 1,
-// 	},
-// }
-
 type BookingsRepositoryImpl struct {
 	//db connection
 	bookings []entities.Booking
