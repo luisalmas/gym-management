@@ -28,3 +28,10 @@ func NewBookingDateInvalid() *BookingsError{
 		Code:    http.StatusBadRequest,
 	}
 }
+
+func NewBookingInvalidNameError() *BookingsError{
+	return &BookingsError{
+		Message: "booking name invalid",
+		Code:    http.StatusBadRequest,
+	}
+}

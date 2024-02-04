@@ -3,6 +3,7 @@ package entities
 import (
 	"gym-management/classes/models/dtos"
 	"gym-management/classes/models/errors"
+	"strings"
 	"time"
 )
 
@@ -15,6 +16,12 @@ type Class struct {
 }
 
 func (class *Class) New(classDTO *dtos.ClassDTO) (*Class, error) {
+
+	classDTO.Name = strings.TrimSpace(classDTO.Name)
+
+	if classDTO.Name == "" {
+		return nil, errors.NewClassInvalidError("invalid name")
+	}
 
 	if classDTO.StartDate.Compare(classDTO.EndDate) == 1 {
 		return nil, errors.NewClassInvalidError("Class: invalid dates")

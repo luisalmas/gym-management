@@ -25,7 +25,7 @@ func (service *ClassesServiceImpl) GetClasses() *[]dtos.ClassCompleteDTO {
 	return service.ClassesRepository.GetClasses()
 }
 
-func (service *ClassesServiceImpl) InsertNewClass(classSchedule *dtos.ClassDTO) (*dtos.ClassCompleteDTO, error) {
+func (service *ClassesServiceImpl) InsertNewClass(classSchedule *dtos.ClassDTO) (*dtos.ClassCompleteDTO, error) {	
 	classEntity := &entities.Class{}
 	classScheduleEntity, err := classEntity.New(classSchedule)
 

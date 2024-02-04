@@ -144,6 +144,44 @@ func TestClassesService(t *testing.T) {
 		assert.Nil(t, class)
 	})
 
+	t.Run("InsertClassInvalidName", func(t *testing.T) {
+		class, err := classesService.InsertNewClass(&dtos.ClassDTO{
+			Name: " ",
+			StartDate: time.Date(2024, time.January, 01, 0, 0, 0, 0, time.UTC),
+			EndDate: time.Date(2023, time.January, 20,  0, 0, 0, 0, time.UTC),
+			Capacity: -1,
+		})
+
+		assert.NotNil(t, err)
+		assert.Nil(t, class)
+	})
+
+	t.Run("InsertClassNameTrim", func(t *testing.T) {
+		classesRepoMock.On("InsertNewClass", mock.Anything).Return(&dtos.ClassCompleteDTO{
+			ClassId: 3,
+			Name: "Name",
+			StartDate: time.Date(2024, time.January, 01, 0, 0, 0, 0, time.UTC),
+			EndDate: time.Date(2024, time.January, 20,  0, 0, 0, 0, time.UTC),
+			Capacity: 1,
+		}).Once()
+		
+		class, err := classesService.InsertNewClass(&dtos.ClassDTO{
+			Name: "  Name  ",
+			StartDate: time.Date(2024, time.January, 01, 0, 0, 0, 0, time.UTC),
+			EndDate: time.Date(2024, time.January, 20,  0, 0, 0, 0, time.UTC),
+			Capacity: 1,
+		})
+
+		assert.Nil(t, err)
+		assert.Equal(t, dtos.ClassCompleteDTO{
+			ClassId: 3,
+			Name: "Name",
+			StartDate: time.Date(2024, time.January, 01, 0, 0, 0, 0, time.UTC),
+			EndDate: time.Date(2024, time.January, 20,  0, 0, 0, 0, time.UTC),
+			Capacity: 1,
+		}, *class)
+	})
+
 	//===================== UpdateClass tests ==============================================
 
 	t.Run("UpdateClass", func(t *testing.T) {

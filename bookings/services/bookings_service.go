@@ -6,6 +6,7 @@ import (
 	"gym-management/bookings/models/errors"
 	"gym-management/bookings/repositories"
 	classesRepo "gym-management/classes/repositories"
+	"strings"
 )
 
 type BookingsServiceImpl struct {
@@ -35,6 +36,11 @@ func (service *BookingsServiceImpl) GetBooking(id int) (*dtos.BookingCompleteDTO
 }
 
 func (service *BookingsServiceImpl) InsertNewBooking(newBooking *dtos.BookingDTO) (*dtos.BookingCompleteDTO, error){
+	newBooking.Name = strings.TrimSpace(newBooking.Name)
+
+	if newBooking.Name == "" {
+		return nil, errors.NewBookingInvalidNameError()
+	}
 
 	if err := service.validateBooking(newBooking); err != nil {
 		return nil, err
@@ -48,6 +54,12 @@ func (service *BookingsServiceImpl) InsertNewBooking(newBooking *dtos.BookingDTO
 }
 
 func (service *BookingsServiceImpl) UpdateBooking(id int, updatedBooking *dtos.BookingDTO) (*dtos.BookingCompleteDTO, error){
+	updatedBooking.Name = strings.TrimSpace(updatedBooking.Name)
+
+	if updatedBooking.Name == "" {
+		return nil, errors.NewBookingInvalidNameError()
+	}
+	
 	currentBooking, errGet := service.BookingsRepository.GetBooking(id)
 	
 	if errGet != nil {

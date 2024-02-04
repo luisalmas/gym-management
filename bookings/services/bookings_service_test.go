@@ -131,6 +131,43 @@ func TestBookingsService(t *testing.T) {
 		assert.NotNil(t, errInsert)
 	})
 
+	t.Run("InsertBookingNameTrim", func(t *testing.T){
+		//classesRepoMock.On("GetClass", mock.AnythingOfType("int")).Return(class, nil).Once()
+
+		insertedBooking, errInsert := bookingsService.InsertNewBooking(&dtos.BookingDTO{
+			Name: "         ",
+			Date: time.Date(2024, time.December, 25, 0, 0, 0, 0, time.UTC),
+			ClassId: 1,
+		})
+
+		assert.Nil(t, insertedBooking)
+		assert.NotNil(t, errInsert)
+	})
+
+	t.Run("InsertBookingNameTrim", func(t *testing.T){
+		classesRepoMock.On("GetClass", mock.AnythingOfType("int")).Return(class, nil).Once()
+		bookRepoMock.On("InsertNewBooking", mock.Anything).Return(&dtos.BookingCompleteDTO{
+			BookingId: 3,
+			Name: "Jonas",
+			Date: time.Date(2024, time.January, 25, 0, 0, 0, 0, time.UTC),
+			ClassId: 1,
+		}).Once()
+
+		insertedBooking, errInsert := bookingsService.InsertNewBooking(&dtos.BookingDTO{
+			Name: "     Jonas     ",
+			Date: time.Date(2024, time.January, 25, 0, 0, 0, 0, time.UTC),
+			ClassId: 1,
+		})
+
+		assert.Nil(t, errInsert)
+		assert.Equal(t, dtos.BookingCompleteDTO{
+			BookingId: 3,
+			Name: "Jonas",
+			Date: time.Date(2024, time.January, 25, 0, 0, 0, 0, time.UTC),
+			ClassId: 1,
+		}, *insertedBooking)
+	})
+
 	//===================== UpdateBookings tests ==============================================
 
 	t.Run("UpdateBooking", func(t *testing.T){
