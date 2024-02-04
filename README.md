@@ -4,6 +4,10 @@ Implementation of a service in Go of a gym management
 
 ## Features
 
+- This project contains the requests POST, PUT, GET and DELETE to insert, update, retrieve and delete respectively for both classes and bookings resourses.
+- Validations not only for the data transfer objects (DTOs) but also for the bookings that are inserted outside the range of the respective class or if a class is updated the changes are reflected in the corresponding bookings (ie: changes in the date ranges deletes bookings outside of the new range).
+- Tests for all the layers of each resource
+
 ## Clone project
 
 To clone the project repository run the following command:
