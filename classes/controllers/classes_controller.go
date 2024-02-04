@@ -79,6 +79,12 @@ func (ctrl *ClassesController) postClassSchedule(c *gin.Context) {
 	var classSchedule dtos.ClassDTO
 
 	if err := c.BindJSON(&classSchedule); err != nil {
+
+		if e, _ := err.(*time.ParseError); e != nil {
+			c.IndentedJSON(http.StatusBadRequest, "invalid date format")
+			return
+		}
+
         c.IndentedJSON(http.StatusBadRequest, err.Error())
 		return
     }
@@ -109,6 +115,12 @@ func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 	var classSchedule dtos.ClassDTO
 
 	if err := c.BindJSON(&classSchedule); err != nil {
+
+		if e, _ := err.(*time.ParseError); e != nil {
+			c.IndentedJSON(http.StatusBadRequest, "invalid date format")
+			return
+		}
+
         c.IndentedJSON(http.StatusBadRequest, err.Error())
 		return
     }

@@ -6,6 +6,7 @@ import (
 	"gym-management/utils"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -78,6 +79,12 @@ func (ctrl *BookingsControllerImpl) postBooking(c *gin.Context) {
 	var booking dtos.BookingDTO
 
 	if err := c.BindJSON(&booking); err != nil {
+
+		if e, _ := err.(*time.ParseError); e != nil {
+			c.IndentedJSON(http.StatusBadRequest, "invalid date format")
+			return
+		}
+
         c.IndentedJSON(http.StatusBadRequest, err.Error())
 		return
     }
@@ -107,6 +114,12 @@ func (ctrl *BookingsControllerImpl) putBooking(c *gin.Context) {
 	var booking dtos.BookingDTO
 
 	if err := c.BindJSON(&booking); err != nil {
+
+		if e, _ := err.(*time.ParseError); e != nil {
+			c.IndentedJSON(http.StatusBadRequest, "invalid date format")
+			return
+		}
+
         c.IndentedJSON(http.StatusBadRequest, err.Error())
 		return
     }
