@@ -15,7 +15,7 @@ type Error interface {
 func ErrorHandler(c *gin.Context, err error) {
 	var errInterface Error
 	if errors.As(err, &errInterface) {
-		c.IndentedJSON(errInterface.ErrorCode(), errInterface.Error())
+		c.IndentedJSON(errInterface.ErrorCode(), gin.H{"message": errInterface.Error()})
 		return
 	}
 	c.IndentedJSON(http.StatusBadRequest, err.Error())

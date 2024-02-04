@@ -9,7 +9,13 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golodash/galidator"
 )
+
+var (
+	g = galidator.New()
+	customizer = g.Validator(dtos.ClassDTO{})
+  )
 
 type ClassesController struct {
 	ClassesService services.ClassesService
@@ -53,13 +59,13 @@ func (ctrl *ClassesController) getClassesSchedules(c *gin.Context) {
 func (ctrl *ClassesController) getClassSchedule(c *gin.Context) {
 	id, idError := strconv.Atoi(c.Param("id"))
 	if idError != nil {
-		c.IndentedJSON(http.StatusBadRequest, idError.Error())
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": idError.Error()})
 		return
 	}
 	class, err := ctrl.ClassesService.GetClass(id)
 
 	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, err.Error())
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -81,18 +87,18 @@ func (ctrl *ClassesController) postClassSchedule(c *gin.Context) {
 	if err := c.BindJSON(&classSchedule); err != nil {
 
 		if e, _ := err.(*time.ParseError); e != nil {
-			c.IndentedJSON(http.StatusBadRequest, "invalid date format")
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid date format"})
 			return
 		}
 
-        c.IndentedJSON(http.StatusBadRequest, err.Error())
+        c.IndentedJSON(http.StatusBadRequest, gin.H{"message": customizer.DecryptErrors(err)})
 		return
     }
 	
 	insertedClassSchedule, err := ctrl.ClassesService.InsertNewClass(&classSchedule)
 
 	if err != nil{
-		c.IndentedJSON(http.StatusBadRequest, err.Error())
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -117,17 +123,17 @@ func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 	if err := c.BindJSON(&classSchedule); err != nil {
 
 		if e, _ := err.(*time.ParseError); e != nil {
-			c.IndentedJSON(http.StatusBadRequest, "invalid date format")
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid date format"})
 			return
 		}
 
-        c.IndentedJSON(http.StatusBadRequest, err.Error())
+        c.IndentedJSON(http.StatusBadRequest, gin.H{"message": customizer.DecryptErrors(err)})
 		return
     }
 
 	id, idError := strconv.Atoi(c.Param("id"))
 	if idError != nil {
-		c.IndentedJSON(http.StatusBadRequest, idError.Error())
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": idError.Error()})
 		return
 	}
 
@@ -154,7 +160,7 @@ func (ctrl *ClassesController) putClassSchedule(c *gin.Context) {
 func (ctrl *ClassesController) deleteClassSchedule(c *gin.Context) {
 	id, idError := strconv.Atoi(c.Param("id"))
 	if idError != nil {
-		c.IndentedJSON(http.StatusBadRequest, idError.Error())
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": idError.Error()})
 		return
 	}
 
@@ -181,7 +187,7 @@ func (ctrl *ClassesController) deleteClassSchedule(c *gin.Context) {
 func (ctrl *ClassesController) getClassBookings(c *gin.Context){
 	id, idError := strconv.Atoi(c.Param("id"))
 	if idError != nil {
-		c.IndentedJSON(http.StatusBadRequest, idError.Error())
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": idError.Error()})
 		return
 	}
 
@@ -192,7 +198,7 @@ func (ctrl *ClassesController) getClassBookings(c *gin.Context){
 	
 	if dateStr != "" {
 		if date , err = time.Parse(time.RFC3339, dateStr) ; err != nil {
-			c.IndentedJSON(http.StatusBadRequest, err.Error())
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid date format"})
 			return
 		}
 	}else{
@@ -202,7 +208,7 @@ func (ctrl *ClassesController) getClassBookings(c *gin.Context){
 	bookings, err := ctrl.ClassesService.GetBookingsFromClass(id, date)
 
 	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, err.Error())
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return
 	}
 

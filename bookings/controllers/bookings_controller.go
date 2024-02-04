@@ -9,7 +9,13 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golodash/galidator"
 )
+
+var (
+	g = galidator.New()
+	customizer = g.Validator(dtos.BookingDTO{})
+  )
 
 type BookingsControllerImpl struct {
 	BookingsService services.BookingsService
@@ -52,7 +58,7 @@ func (ctrl *BookingsControllerImpl) getBookings(c *gin.Context){
 func (ctrl *BookingsControllerImpl) getBooking(c *gin.Context){
 	id, idError := strconv.Atoi(c.Param("id"))
 	if idError != nil {
-		c.IndentedJSON(http.StatusBadRequest, idError.Error())
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": idError.Error()})
 		return
 	}
 
@@ -81,11 +87,11 @@ func (ctrl *BookingsControllerImpl) postBooking(c *gin.Context) {
 	if err := c.BindJSON(&booking); err != nil {
 
 		if e, _ := err.(*time.ParseError); e != nil {
-			c.IndentedJSON(http.StatusBadRequest, "invalid date format")
-			return
+		  	c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid date format"})
+		  	return
 		}
 
-        c.IndentedJSON(http.StatusBadRequest, err.Error())
+        c.IndentedJSON(http.StatusBadRequest, gin.H{"message": customizer.DecryptErrors(err)})
 		return
     }
 
@@ -116,11 +122,11 @@ func (ctrl *BookingsControllerImpl) putBooking(c *gin.Context) {
 	if err := c.BindJSON(&booking); err != nil {
 
 		if e, _ := err.(*time.ParseError); e != nil {
-			c.IndentedJSON(http.StatusBadRequest, "invalid date format")
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid date format"})
 			return
 		}
 
-        c.IndentedJSON(http.StatusBadRequest, err.Error())
+        c.IndentedJSON(http.StatusBadRequest, gin.H{"message": customizer.DecryptErrors(err)})
 		return
     }
 
@@ -153,7 +159,7 @@ func (ctrl *BookingsControllerImpl) putBooking(c *gin.Context) {
 func (ctrl *BookingsControllerImpl) deleteBooking(c *gin.Context) {
 	id, idError := strconv.Atoi(c.Param("id"))
 	if idError != nil {
-		c.IndentedJSON(http.StatusBadRequest, idError.Error())
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": idError.Error()})
 		return
 	}
 
