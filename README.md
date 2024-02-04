@@ -4,12 +4,12 @@ Test implementation of a service in Go of a gym management
 
 #### Todo
 
-    - Tests (with T.Run)
+    - Tests (with T.Run) X
     - Explain everything in readme (how to clone, commands to run, comands to run tests, explain all endpoints)
     - Simplify dates in inputs
     - Errors when parsing dates
-    - Customize the messages in required in dtos
-    - Errors in objects to return just one
+    - Customize the messages in required in dtos X
+    - Errors in objects to return just one X
     - Trim spaces in strings
 
     - More search parameters (if there is time)
