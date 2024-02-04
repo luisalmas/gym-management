@@ -105,7 +105,7 @@ func TestBookingsService(t *testing.T) {
 
 	t.Run("InsertNewBooking", func(t *testing.T){
 		bookRepoMock.On("InsertNewBooking", mock.Anything).Return(bookingAfterInsert).Once()
-	 	classesRepoMock.On("GetClassSchedule", mock.AnythingOfType("int")).Return(class, nil).Once()
+	 	classesRepoMock.On("GetClass", mock.AnythingOfType("int")).Return(class, nil).Once()
 
 		insertedBooking, errInsert := bookingsService.InsertNewBooking(bookingToInsert)
    
@@ -114,7 +114,7 @@ func TestBookingsService(t *testing.T) {
 	})
 
 	t.Run("InsertBookingInvalidClass", func(t *testing.T){
-		classesRepoMock.On("GetClassSchedule", mock.AnythingOfType("int")).Return(nil, classesErrors.NewClassNotFoundError()).Once()
+		classesRepoMock.On("GetClass", mock.AnythingOfType("int")).Return(nil, classesErrors.NewClassNotFoundError()).Once()
 
 		insertedBooking, errInsert := bookingsService.InsertNewBooking(bookingToInsert)
    
@@ -123,7 +123,7 @@ func TestBookingsService(t *testing.T) {
 	})
 
 	t.Run("InsertBookingInvalidDate", func(t *testing.T){
-		classesRepoMock.On("GetClassSchedule", mock.AnythingOfType("int")).Return(class, nil).Once()
+		classesRepoMock.On("GetClass", mock.AnythingOfType("int")).Return(class, nil).Once()
 
 		insertedBooking, errInsert := bookingsService.InsertNewBooking(bookingToInsertInvalidDate)
 
@@ -135,7 +135,7 @@ func TestBookingsService(t *testing.T) {
 
 	t.Run("UpdateBooking", func(t *testing.T){
 		bookRepoMock.On("GetBooking", mock.Anything).Return(firstbooking, nil).Once()
-		classesRepoMock.On("GetClassSchedule", mock.AnythingOfType("int")).Return(class, nil).Once()
+		classesRepoMock.On("GetClass", mock.AnythingOfType("int")).Return(class, nil).Once()
 		bookRepoMock.On("UpdateBooking", mock.Anything, mock.Anything).Return(bookingAfterInsert).Once()
 
 		updatedBooking, err := bookingsService.UpdateBooking(1, bookingToInsert)
@@ -155,7 +155,7 @@ func TestBookingsService(t *testing.T) {
 
 	t.Run("UpdateBookingClassNotFound", func(t *testing.T){
 		bookRepoMock.On("GetBooking", mock.Anything).Return(firstbooking, nil).Once()
-		classesRepoMock.On("GetClassSchedule", mock.AnythingOfType("int")).Return(nil, classesErrors.NewClassNotFoundError()).Once()
+		classesRepoMock.On("GetClass", mock.AnythingOfType("int")).Return(nil, classesErrors.NewClassNotFoundError()).Once()
 
 		 updatedBooking, err := bookingsService.UpdateBooking(1, bookingToInsert)
 
@@ -165,7 +165,7 @@ func TestBookingsService(t *testing.T) {
 
 	t.Run("UpdateBookingInvalidDate", func(t *testing.T){
 		bookRepoMock.On("GetBooking", mock.Anything).Return(firstbooking, nil).Once()
-		classesRepoMock.On("GetClassSchedule", mock.AnythingOfType("int")).Return(class, nil).Once()
+		classesRepoMock.On("GetClass", mock.AnythingOfType("int")).Return(class, nil).Once()
 
 		updatedBooking, err := bookingsService.UpdateBooking(1, bookingToInsertInvalidDate)
 
@@ -196,7 +196,7 @@ func TestBookingsService(t *testing.T) {
 	//===================== validateBooking tests ==============================================
 
 	t.Run("validateBooking", func(t *testing.T){
-		classesRepoMock.On("GetClassSchedule", class.ClassId).Return(class, nil).Once()
+		classesRepoMock.On("GetClass", class.ClassId).Return(class, nil).Once()
 
 		err := bookingsService.validateBooking(bookingToInsert)
 
@@ -204,7 +204,7 @@ func TestBookingsService(t *testing.T) {
 	})
 
 	t.Run("validateBookingClassNotFound", func(t *testing.T){
-		classesRepoMock.On("GetClassSchedule", class.ClassId).Return(nil, classesErrors.NewClassNotFoundError()).Once()
+		classesRepoMock.On("GetClass", class.ClassId).Return(nil, classesErrors.NewClassNotFoundError()).Once()
 
 		err := bookingsService.validateBooking(bookingToInsert)
 
@@ -212,7 +212,7 @@ func TestBookingsService(t *testing.T) {
 	})
 
 	t.Run("validateBookingInvalidDate", func(t *testing.T){
-		classesRepoMock.On("GetClassSchedule", class.ClassId).Return(class, nil).Once()
+		classesRepoMock.On("GetClass", class.ClassId).Return(class, nil).Once()
 
 		err := bookingsService.validateBooking(bookingToInsertInvalidDate)
 

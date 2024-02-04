@@ -1,6 +1,14 @@
 # gym-management
 
-Test implementation of a service in Go of a gym management
+Implementation of a service in Go of a gym management
+
+## Run service
+
+    go run .
+
+## Run tests
+
+    go test ./...
 
 #### Todo
 
